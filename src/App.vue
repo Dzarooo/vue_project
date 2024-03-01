@@ -50,7 +50,6 @@ const todo = ref([
 const showWarning = ref(false);
 let finishedTasksOfAll = computed(() => "finished " + todo.value.filter(newTodo => newTodo.finished).length + " out of " + todo.value.length + " tasks");
 const progressText = ref("error occurred");
-const finishedTasks = ref(0);
 const finishedAll = computed(() => todo.value.every(task => task.finished)); //check if all tasks are finished, returns true or false
 let watchActive = true; //watch is deactivated once the user clicks "ok" button in warning
 
@@ -97,7 +96,7 @@ const fullname = computed(() => name.value + " " + surname.value);
 
 <template>
 	<div>
-
+		<!--reactive name-->
 		<div style="display: flex; flex-direction: column; align-items: center; background-color:rgb(39, 39, 39); border-radius:20px; padding:5px; margin-bottom:15px">
 			<h1>{{ oldName }}</h1>
 			<input type="text" v-bind:value="oldName" v-on:input="updateName">
@@ -109,6 +108,7 @@ const fullname = computed(() => name.value + " " + surname.value);
 			</ul>
 		</div>
 
+		<!--colours-->
 		<div style="display: flex; flex-direction: column; align-items: center; background-color:rgb(39, 39, 39); border-radius:20px; padding:5px; margin-bottom:15px">
 			<h1>CHOOSE COLOUR!</h1>
 			<select v-model="selectedColour">
@@ -119,6 +119,8 @@ const fullname = computed(() => name.value + " " + surname.value);
 			<p>chosen colour: <span :style="{ color: selectedColour }">{{ selectedColour }}</span></p>
 		</div>
 
+
+		<!--todo-->
 		<div style="display: flex; flex-direction: column; align-items: center; background-color:rgb(39, 39, 39); border-radius:20px; padding:5px; margin-bottom:15px">
 			<h1>TODO LIST</h1>
 			<p>{{ finishedTasksOfAll }}</p>
@@ -152,6 +154,8 @@ const fullname = computed(() => name.value + " " + surname.value);
 			</div>
 		</div>
 
+
+		<!--reactive name and computed() function-->
 		<div style="display: flex; flex-direction: column; align-items: center; background-color:rgb(39, 39, 39); border-radius:20px; padding:5px">
 			<p>{{ fullname }}</p>
 			<input v-model="name" type="text">
