@@ -1,8 +1,8 @@
 <script setup>
 import { ref, reactive } from 'vue';
 
-const name = ref('Kacperek');
-name.value = 'Kacper';
+const oldName = ref('Kacperek');
+oldName.value = 'Kacper';
 
 const user = reactive({
 	name: "Kacper",
@@ -14,7 +14,7 @@ const colours = ["red", "green", "blue"];
 const selectedColour = ref("not selected yet");
 
 const updateName = (event) => {
-	name.value = event.target.value;
+	oldName.value = event.target.value;
 }
 
 const todo = ref([
@@ -32,15 +32,16 @@ const todo = ref([
 	}
 ]);
 
+
 </script>
 
 <template>
 	<div>
 
 		<div style="display: flex; flex-direction: column; align-items: center; background-color:rgb(39, 39, 39); border-radius:20px; padding:5px; margin-bottom:5px">
-			<h1>{{ name }}</h1>
-			<input type="text" v-bind:value="name" v-on:input="updateName">
-			<input type="text" v-model="name">
+			<h1>{{ oldName }}</h1>
+			<input type="text" v-bind:value="oldName" v-on:input="updateName">
+			<input type="text" v-model="oldName">
 
 			<ul>
 				<li>{{ user.name }}</li>
@@ -66,13 +67,13 @@ const todo = ref([
 						<li v-key="index" v-if="task.finished == false" style="display:flex">
 							<input type="checkbox" :id="'task' + index" v-model="todo[index].finished" style="margin-right:5px">
 							<label :for="'task' + index">
-								{{ task.text }} {{ task.finished }}
+								{{ task.text }}
 							</label>
 						</li>
 						<li v-key="index" v-else style="display:flex">
 							<input type="checkbox" :id="'task' + index" v-model="todo[index].finished" style="margin-right:5px">
 							<label :for="'task' + index" style="color:rgb(89, 89, 89); text-decoration-line: line-through">
-								{{ task.text }} {{ task.finished }}
+								{{ task.text }}
 							</label>
 						</li>
 					</template>
@@ -80,6 +81,8 @@ const todo = ref([
 			</template>
 			<p v-else>There are no tasks to do</p>
 		</div>
+
+
 
 	</div>
 </template>
