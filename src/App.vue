@@ -59,7 +59,9 @@ function hideWarning() {
 
 function addNewTask() {
 	const newTaskText = document.getElementById("newTaskText").value;
-	todo.value.push({text: newTaskText, finished: false});
+	if(newTaskText != "") {
+		todo.value.push({text: newTaskText, finished: false});
+	}
 }
 
 watch(todo, (newTodo) => {
