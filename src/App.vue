@@ -151,7 +151,7 @@ const fullname = computed(() => name.value + " " + surname.value);
 			<p style="margin-top:10px;">{{ progressText }}</p>
 			<p v-if="finishedAll && todo.length > 0">All tasks done!</p>
 			<div v-show="showWarning" style="color:rgb(255, 62, 62); display:flex; flex-direction: column; align-items: center; margin-top:10px;">
-				<p>Whoa whoa! Instead of adding new tasks, do existing ones!</p>
+				<p>Instead of adding new tasks, do existing ones!</p>
 				<button v-on:click="hideWarning">OK</button>
 			</div>
 		</div>
