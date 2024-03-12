@@ -86,8 +86,8 @@ watch(todo, (newTodo) => {
 	}
 }, {deep:true, immediate:true});
 
-function handleCheckboxToggle(state, index) {
-	todo.value[index].finished = state
+function handleCheckboxToggle(index) {
+	todo.value[index].finished = !todo.value[index].finished
 	console.log(todo.value[index].text + " " + todo.value[index].finished);
 }
 
