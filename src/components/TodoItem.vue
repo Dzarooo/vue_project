@@ -1,12 +1,10 @@
 <script setup>
+    const model = defineModel();
+
     const props = defineProps({
         task: {
             type: String,
             required: true,
-        },
-        completed: {
-            type: Boolean,
-            default: false,
         },
         index: {
             type: Number,
@@ -25,7 +23,7 @@
 
 <template>
     <li>
-        <input type="checkbox" v-bind:checked="props.completed" v-on:change="handleCheckboxToggle($event, props.index)">
+        <input type="checkbox" v-bind:checked="model" v-on:change="handleCheckboxToggle($event, props.index)">
         {{ props.task }}
     </li>
 </template>

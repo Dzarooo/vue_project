@@ -146,7 +146,7 @@ const fullname = computed(() => name.value + " " + surname.value);
 								{{ task.text }}
 							</label>
 						</li> -->
-						<todo-item v-bind:task="task.text" v-bind:index="index" v-bind:completed="task.finished" v-on:changed="handleCheckboxToggle"></todo-item>
+						<todo-item v-bind:task="task.text" v-bind:index="index" v-model="task.finished" v-on:changed="handleCheckboxToggle"></todo-item>
 					</template>
 				</ul>
 			</template>
