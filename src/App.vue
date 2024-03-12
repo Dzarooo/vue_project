@@ -1,5 +1,7 @@
 <script setup>
 import { ref, reactive, computed, watch, onMounted } from 'vue';
+import TodoItem from './components/TodoItem.vue'; 
+import TodoInput from './components/TodoInput.vue';
 
 //reactive name
 const oldName = ref('Kacperek');
@@ -57,11 +59,8 @@ function hideWarning() {
 	showWarning.value = false;
 }
 
-function addNewTask() {
-	const newTaskText = document.getElementById("newTaskText").value;
-	if(newTaskText != "") {
-		todo.value.push({text: newTaskText, finished: false});
-	}
+function addNewTask(newTaskText) {
+	todo.value.push({text: newTaskText, finished: false});
 }
 
 watch(todo, (newTodo) => {
@@ -71,8 +70,8 @@ watch(todo, (newTodo) => {
 			watchActive = false;
 		}
 	}
-	console.log(newTodo.filter(newTodo => newTodo.finished).length + 3);
-	console.log(newTodo.length);
+	// console.log(newTodo.filter(newTodo => newTodo.finished).length + 3);
+	// console.log(newTodo.length);
 	if(newTodo.filter(newTodo => newTodo.finished).length == 0) {
 		progressText.value = "Time to get some work done";
 	}
@@ -86,6 +85,11 @@ watch(todo, (newTodo) => {
 		progressText.value = "It's all systems go";
 	}
 }, {deep:true, immediate:true});
+
+function handleCheckboxToggle(state, index) {
+	todo.value[index].finished = state
+	console.log(todo.value[index].text + " " + todo.value[index].finished);
+}
 
 
 
@@ -103,7 +107,7 @@ const fullname = computed(() => name.value + " " + surname.value);
 			<h1>{{ oldName }}</h1>
 			<input type="text" v-bind:value="oldName" v-on:input="updateName">
 			<input type="text" v-model="oldName">
-
+			
 			<ul>
 				<li>{{ user.name }}</li>
 				<li> {{ user.surname }}</li>
@@ -126,14 +130,11 @@ const fullname = computed(() => name.value + " " + surname.value);
 		<div style="display: flex; flex-direction: column; align-items: center; background-color:rgb(39, 39, 39); border-radius:20px; padding:5px; margin-bottom:15px">
 			<h1>TODO LIST</h1>
 			<p>{{ finishedTasksOfAll }}</p>
-			<div style="margin-bottom:10px">
-				<input id="newTaskText" type="text" placeholder="New task" v-on:keypress.enter="addNewTask">
-				<button v-on:click="addNewTask">Dodaj</button>
-			</div>
+			<todo-input v-on:created="addNewTask"></todo-input>
 			<template v-if="todo.length > 0">
 				<ul>
 					<template v-for="(task, index) in todo">
-						<li v-key="index" v-if="task.finished == false" style="display:flex">
+						<!-- <li v-key="index" v-if="task.finished == false" style="display:flex">
 							<input type="checkbox" :id="'task' + index" v-model="todo[index].finished" style="margin-right:5px">
 							<label :for="'task' + index">
 								{{ task.text }}
@@ -144,7 +145,8 @@ const fullname = computed(() => name.value + " " + surname.value);
 							<label :for="'task' + index" style="color:rgb(89, 89, 89); text-decoration-line: line-through">
 								{{ task.text }}
 							</label>
-						</li>
+						</li> -->
+						<todo-item v-bind:task="task.text" v-bind:index="index" v-bind:completed="task.finished" v-on:changed="handleCheckboxToggle"></todo-item>
 					</template>
 				</ul>
 			</template>
