@@ -22,73 +22,108 @@ const colours = ["red", "green", "blue"];
 const selectedColour = ref("not selected yet");
 
 //todo
-const todo = ref([
-	{
-		text: 'Zrobić matmę',
-		finished: false,
-	},
-	{
-		text: 'Odkurzyć pokój',
-		finished: false,
-	},
-	{
-		text: 'Wynieść śmieci',
-		finished: true,
-	},
-	{
-		text: 'Spakować się do szkoły',
-		finished: false,
-	},
-	{
-		text: 'Nauczyć się na sprawdzian z polskiego',
-		finished: false,
-	},
-	{
-		text: 'wstawić pranie',
-		finished: false,
-	},
+const todos = ref([
+		{
+			name: "Todo1",
+			tasks: [
+				{
+					text: 'Zrobić matmę',
+					finished: false,
+				},
+				{
+					text: 'Odkurzyć pokój',
+					finished: false,
+				},
+				{
+					text: 'Wynieść śmieci',
+					finished: true,
+				},
+				{
+					text: 'Spakować się do szkoły',
+					finished: false,
+				},
+				{
+					text: 'Nauczyć się na sprawdzian z polskiego',
+					finished: false,
+				},
+				{
+					text: 'wstawić pranie',
+					finished: false,
+				},
+			]
+		},
+		{
+			name: "Todo2",
+            tasks: [
+				{
+					text: 'odrobić polski',
+					finished: false,
+				},
+				{
+					text: 'zrobić vue',
+					finished: false,
+				},
+				{
+					text: 'kupić prezent na 18-nastkę',
+					finished: true,
+				},
+				{
+					text: 'Dokonanie przewrotu w państwie',
+					finished: false,
+				},
+				{
+					text: 'zrewolucjonizować przemysł zbrojeniowy',
+					finished: false,
+				},
+				{
+					text: 'nauczyć się klasy shape w godocie',
+					finished: false,
+				},
+			]
+		}
 ]);
 
 const showWarning = ref(false);
-let finishedTasksOfAll = computed(() => "finished " + todo.value.filter(newTodo => newTodo.finished).length + " out of " + todo.value.length + " tasks");
+//let finishedTasksOfAll = computed(() => "finished " + todo.value.filter(newTodo => newTodo.finished).length + " out of " + todo.value.length + " tasks");
 const progressText = ref("error occurred");
-const finishedAll = computed(() => todo.value.every(task => task.finished)); //check if all tasks are finished, returns true or false
+//const finishedAll = computed(() => todo.value.every(task => task.finished)); //check if all tasks are finished, returns true or false
 let watchActive = true; //watch is deactivated once the user clicks "ok" button in warning
 
 function hideWarning() {
 	showWarning.value = false;
 }
 
-function addNewTask(newTaskText) {
-	todo.value.push({text: newTaskText, finished: false});
+function addNewTask(newTaskTextStatic, indexTodo) {
+	//console.log(indexTodo);
+	todos.value[indexTodo].tasks.push({text: newTaskTextStatic, finished: false});
 }
 
-watch(todo, (newTodo) => {
-	if(watchActive) {
-		if(newTodo.length > 5) {
-			showWarning.value = true;
-			watchActive = false;
-		}
-	}
-	// console.log(newTodo.filter(newTodo => newTodo.finished).length + 3);
-	// console.log(newTodo.length);
-	if(newTodo.filter(newTodo => newTodo.finished).length == 0) {
-		progressText.value = "Time to get some work done";
-	}
-	else if(newTodo.filter(newTodo => newTodo.finished).length == newTodo.length) {
-		progressText.value = "All done!";
-	}
-	else if(newTodo.filter(newTodo => newTodo.finished).length + 3 >= newTodo.length) {
-		progressText.value = "Almost done!";
-	}
-	else if(newTodo.filter(newTodo => newTodo.finished).length > 0) {
-		progressText.value = "It's all systems go";
-	}
-}, {deep:true, immediate:true});
+// watch(todo, (newTodo) => {
+// 	if(watchActive) {
+// 		if(newTodo.length > 5) {
+// 			showWarning.value = true;
+// 			watchActive = false;
+// 		}
+// 	}
+// 	// console.log(newTodo.filter(newTodo => newTodo.finished).length + 3);
+// 	// console.log(newTodo.length);
+// 	if(newTodo.filter(newTodo => newTodo.finished).length == 0) {
+// 		progressText.value = "Time to get some work done";
+// 	}
+// 	else if(newTodo.filter(newTodo => newTodo.finished).length == newTodo.length) {
+// 		progressText.value = "All done!";
+// 	}
+// 	else if(newTodo.filter(newTodo => newTodo.finished).length + 3 >= newTodo.length) {
+// 		progressText.value = "Almost done!";
+// 	}
+// 	else if(newTodo.filter(newTodo => newTodo.finished).length > 0) {
+// 		progressText.value = "It's all systems go";
+// 	}
+// }, {deep:true, immediate:true});
 
-function handleCheckboxToggle(index) {
-	todo.value[index].finished = !todo.value[index].finished
-	console.log(todo.value[index].text + " " + todo.value[index].finished);
+function handleCheckboxToggle(indexItem, indexTodo) {
+	//console.log(indexTodo, indexItem);
+	todos.value[indexTodo].tasks[indexItem].finished = !todos.value[indexTodo].tasks[indexItem].finished
 }
 
 
@@ -127,36 +162,31 @@ const fullname = computed(() => name.value + " " + surname.value);
 
 
 		<!--todo-->
-		<div style="display: flex; flex-direction: column; align-items: center; background-color:rgb(39, 39, 39); border-radius:20px; padding:5px; margin-bottom:15px">
-			<h1>TODO LIST</h1>
-			<p>{{ finishedTasksOfAll }}</p>
-			<todo-input v-on:created="addNewTask"></todo-input>
-			<template v-if="todo.length > 0">
-				<ul>
-					<template v-for="(task, index) in todo">
-						<!-- <li v-key="index" v-if="task.finished == false" style="display:flex">
-							<input type="checkbox" :id="'task' + index" v-model="todo[index].finished" style="margin-right:5px">
-							<label :for="'task' + index">
-								{{ task.text }}
-							</label>
-						</li>
-						<li v-key="index" v-else style="display:flex">
-							<input type="checkbox" :id="'task' + index" v-model="todo[index].finished" style="margin-right:5px">
-							<label :for="'task' + index" style="color:rgb(89, 89, 89); text-decoration-line: line-through">
-								{{ task.text }}
-							</label>
-						</li> -->
-						<todo-item v-bind:task="task.text" v-bind:index="index" v-model="task.finished" v-on:changed="handleCheckboxToggle"></todo-item>
-					</template>
-				</ul>
-			</template>
-			<p style="margin-top:10px;">{{ progressText }}</p>
-			<p v-if="finishedAll && todo.length > 0">All tasks done!</p>
-			<div v-show="showWarning" style="color:rgb(255, 62, 62); display:flex; flex-direction: column; align-items: center; margin-top:10px;">
-				<p>Instead of adding new tasks, do existing ones!</p>
-				<button v-on:click="hideWarning">OK</button>
+		<template v-for="(todo, indexTodo) in todos">
+			<div style="display: flex; flex-direction: column; align-items: center; background-color:rgb(39, 39, 39); border-radius:20px; padding:5px; margin-bottom:15px">
+
+				<h1>{{ todo.name }}</h1>
+				<!-- <p>{{ finishedTasksOfAll }}</p> -->
+				<todo-input v-on:created="addNewTask" v-bind:indexTodo="indexTodo"></todo-input>
+
+				<template v-if="todo.tasks.length > 0">
+					<ul>
+						<template v-for="(task, indexItem) in todo.tasks">
+							<todo-item v-bind:task="task.text" v-bind:indexTodo="indexTodo" v-bind:indexItem="indexItem" v-model="task.finished" v-on:changed="handleCheckboxToggle"></todo-item>
+						</template>
+					</ul>
+				</template>
+
+				<!-- <p style="margin-top:10px;">{{ progressText }}</p>
+				<p v-if="finishedAll && todo.length > 0">All tasks done!</p>
+
+				<div v-show="showWarning" style="color:rgb(255, 62, 62); display:flex; flex-direction: column; align-items: center; margin-top:10px;">
+					<p>Instead of adding new tasks, do existing ones!</p>
+					<button v-on:click="hideWarning">OK</button>
+				</div> -->
+
 			</div>
-		</div>
+		</template>
 
 
 		<!--reactive name and computed() function-->
