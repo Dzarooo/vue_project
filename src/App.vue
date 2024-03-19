@@ -1,5 +1,5 @@
 <script setup>
-import { ref, reactive, computed, watch, onMounted } from 'vue';
+import { ref, reactive, computed, watch, onMounted, warn } from 'vue';
 import TodoItem from './components/TodoItem.vue'; 
 import TodoInput from './components/TodoInput.vue';
 
@@ -83,19 +83,43 @@ const todos = ref([
 		}
 ]);
 
-const showWarning = ref(false);
 //let finishedTasksOfAll = computed(() => "finished " + todo.value.filter(newTodo => newTodo.finished).length + " out of " + todo.value.length + " tasks");
-const progressText = ref("error occurred");
+//const progressText = ref("error occurred");
 //const finishedAll = computed(() => todo.value.every(task => task.finished)); //check if all tasks are finished, returns true or false
-let watchActive = true; //watch is deactivated once the user clicks "ok" button in warning
-
-function hideWarning() {
-	showWarning.value = false;
-}
 
 function addNewTask(newTaskTextStatic, indexTodo) {
 	//console.log(indexTodo);
 	todos.value[indexTodo].tasks.push({text: newTaskTextStatic, finished: false});
+}
+
+const warningsData = ref([]);
+
+for(let i = 0; i < todos.value.length; i++) {
+	warningsData.value.push({
+		show:false,
+		hidden:false,
+	});
+}
+
+for(let i = 0; i < todos.value.length; ++i) {
+	let todo = todos.value[i];
+	watch(todo, (newTodo) => {
+		console.log("index:", i);
+		if(warningsData.value[i].hidden == false) {
+			if(newTodo.tasks.length > 5) {
+				warningsData.value[i].show = true;
+			}
+		}
+		console.log(warningsData.value);
+
+	}, {deep:true, immediate:true});
+
+};
+
+function hideWarning(index) {
+	console.log(index);
+	warningsData.value[index].hidden = true;
+	warningsData.value[index].show = false;
 }
 
 // watch(todo, (newTodo) => {
@@ -178,12 +202,12 @@ const fullname = computed(() => name.value + " " + surname.value);
 				</template>
 
 				<!-- <p style="margin-top:10px;">{{ progressText }}</p>
-				<p v-if="finishedAll && todo.length > 0">All tasks done!</p>
+				<p v-if="finishedAll && todo.length > 0">All tasks done!</p> -->
 
-				<div v-show="showWarning" style="color:rgb(255, 62, 62); display:flex; flex-direction: column; align-items: center; margin-top:10px;">
+				<div v-show="warningsData[indexTodo].show" style="color:rgb(255, 62, 62); display:flex; flex-direction: column; align-items: center; margin-top:10px;">
 					<p>Instead of adding new tasks, do existing ones!</p>
-					<button v-on:click="hideWarning">OK</button>
-				</div> -->
+					<button v-on:click="hideWarning(indexTodo)">OK</button>
+				</div>
 
 			</div>
 		</template>
