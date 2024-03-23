@@ -2,6 +2,7 @@
 import { ref, reactive, computed, watch, onMounted, warn } from 'vue';
 import TodoItem from './components/TodoItem.vue'; 
 import TodoInput from './components/TodoInput.vue';
+import Accordion from './components/Accordion.vue';
 
 //reactive name
 const oldName = ref('Kacperek');
@@ -211,6 +212,7 @@ const fullname = computed(() => name.value + " " + surname.value);
 
 			</div>
 		</template>
+		<accordion></accordion>
 
 
 		<!--reactive name and computed() function-->
