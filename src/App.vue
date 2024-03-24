@@ -86,9 +86,9 @@ const todos = ref([
 
 
 function countFinished(tasks) {
-	console.log("test",tasks);
+	//console.log("test",tasks);
 	const count = ref(tasks.filter(todo => todo.finished).length);
-	console.log(count.value);
+	//console.log(count.value);
 	let result = "finished " + count.value + " of " + tasks.length + " tasks";
 	return result;
 }

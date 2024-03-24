@@ -1,6 +1,7 @@
 <script setup>
     import TodoItem from './TodoItem.vue';
     import TodoInput from './TodoInput.vue';
+    import { ref, watch } from 'vue';
 
     const props = defineProps({
         indexTodo: {
@@ -52,6 +53,23 @@
     function hideWarning(indexTodo) {
         emits('hidden', indexTodo);
     }
+
+    const progressText = ref("");
+    watch(props.todo, (newTodo) => {
+        console.log(newTodo.tasks);
+    	if(newTodo.tasks.filter(todo => todo.finished).length == 0) {
+    		progressText.value = "Time to get some work done";
+    	}
+    	else if(newTodo.tasks.filter(todo => todo.finished).length == newTodo.tasks.length) {
+    		progressText.value = "All tasks done!";
+    	}
+    	else if(newTodo.tasks.filter(todo => todo.finished).length + 3 >= newTodo.tasks.length) {
+    		progressText.value = "Almost done!";
+    	}
+    	else if(newTodo.tasks.filter(todo => todo.finished).length > 0) {
+    		progressText.value = "It's all systems go";
+    	}
+    }, {deep:true, immediate:true});
 </script>
 
 
@@ -75,8 +93,8 @@
 					</ul>
 				</template>
 
-                <!-- <p style="margin-top:10px;">{{ progressText }}</p>
-				<p v-if="finishedAll && todo.length > 0">All tasks done!</p> -->
+                <p style="margin-top:10px;">{{ progressText }}</p>
+				<!-- <p v-if="finishedAll && todo.length > 0">All tasks done!</p> -->
 
                 <div v-show="props.warningState" style="color:rgb(255, 62, 62); display:flex; flex-direction: column; align-items: center; margin-top:10px;">
 		        	<p>Instead of adding new tasks, do existing ones!</p>
