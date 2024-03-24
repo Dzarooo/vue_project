@@ -7,9 +7,12 @@ import { ref } from 'vue';
             required: true,
         },
     });
+
     const emits = defineEmits(['created']);
 
+
     const newTaskText = ref("");
+
 
     function updateNewTaskText(event) {
         newTaskText.value = event.target.value;
@@ -17,6 +20,7 @@ import { ref } from 'vue';
 
     function addNewTask(indexTodo) {
         //console.log(newTaskText.value);
+        //console.log(indexTodo);
         let newTaskTextStatic = newTaskText.value;
         if(newTaskTextStatic != "") {
 		    emits("created", newTaskTextStatic, indexTodo);

@@ -84,12 +84,19 @@ const todos = ref([
 		}
 ]);
 
+
+// function countFinished(tasks) {
+// 	console.log("test",tasks);
+// 	const count = ref(tasks.filter(todo => todo.finished).length);
+// 	console.log(count.value);
+// 	return count.value;
+// }
 //let finishedTasksOfAll = computed(() => "finished " + todo.value.filter(newTodo => newTodo.finished).length + " out of " + todo.value.length + " tasks");
 //const progressText = ref("error occurred");
 //const finishedAll = computed(() => todo.value.every(task => task.finished)); //check if all tasks are finished, returns true or false
 
 function addNewTask(newTaskTextStatic, indexTodo) {
-	//console.log(indexTodo);
+	console.log("app vue received: ", newTaskTextStatic, indexTodo);
 	todos.value[indexTodo].tasks.push({text: newTaskTextStatic, finished: false});
 }
 
@@ -105,13 +112,13 @@ for(let i = 0; i < todos.value.length; i++) {
 for(let i = 0; i < todos.value.length; ++i) {
 	let todo = todos.value[i];
 	watch(todo, (newTodo) => {
-		console.log("index:", i);
+		//console.log("index:", i);
 		if(warningsData.value[i].hidden == false) {
 			if(newTodo.tasks.length > 5) {
 				warningsData.value[i].show = true;
 			}
 		}
-		console.log(warningsData.value);
+		//console.log(warningsData.value);
 
 	}, {deep:true, immediate:true});
 
@@ -148,6 +155,7 @@ function hideWarning(index) {
 
 function handleCheckboxToggle(indexItem, indexTodo) {
 	//console.log(indexTodo, indexItem);
+	//console.log(count)
 	todos.value[indexTodo].tasks[indexItem].finished = !todos.value[indexTodo].tasks[indexItem].finished
 }
 
@@ -185,34 +193,18 @@ const fullname = computed(() => name.value + " " + surname.value);
 			<p>chosen colour: <span :style="{ color: selectedColour }">{{ selectedColour }}</span></p>
 		</div>
 
-
 		<!--todo-->
 		<template v-for="(todo, indexTodo) in todos">
-			<div style="display: flex; flex-direction: column; align-items: center; background-color:rgb(39, 39, 39); border-radius:20px; padding:5px; margin-bottom:15px">
-
-				<h1>{{ todo.name }}</h1>
-				<!-- <p>{{ finishedTasksOfAll }}</p> -->
-				<todo-input v-on:created="addNewTask" v-bind:indexTodo="indexTodo"></todo-input>
-
-				<template v-if="todo.tasks.length > 0">
-					<ul>
-						<template v-for="(task, indexItem) in todo.tasks">
-							<todo-item v-bind:task="task.text" v-bind:indexTodo="indexTodo" v-bind:indexItem="indexItem" v-model="task.finished" v-on:changed="handleCheckboxToggle"></todo-item>
-						</template>
-					</ul>
+			<accordion v-bind:indexTodo="indexTodo" v-bind:todo="todo" v-bind:warningState="warningsData[indexTodo].show" v-on:created="addNewTask" v-on:hidden="hideWarning(indexTodo)">
+				<template #header>
+					<h1 style="text-align: center">{{ todo.name }}</h1>
+					
 				</template>
-
-				<!-- <p style="margin-top:10px;">{{ progressText }}</p>
-				<p v-if="finishedAll && todo.length > 0">All tasks done!</p> -->
-
-				<div v-show="warningsData[indexTodo].show" style="color:rgb(255, 62, 62); display:flex; flex-direction: column; align-items: center; margin-top:10px;">
-					<p>Instead of adding new tasks, do existing ones!</p>
-					<button v-on:click="hideWarning(indexTodo)">OK</button>
-				</div>
-
-			</div>
+				<template v-for="(task, indexItem) in todo.tasks">
+					<todo-item v-bind:task="task.text" v-bind:indexTodo="indexTodo" v-bind:indexItem="indexItem" v-model="task.finished" v-on:changed="handleCheckboxToggle"></todo-item>
+				</template>
+			</accordion>
 		</template>
-		<accordion></accordion>
 
 
 		<!--reactive name and computed() function-->
