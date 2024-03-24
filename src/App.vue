@@ -85,12 +85,13 @@ const todos = ref([
 ]);
 
 
-// function countFinished(tasks) {
-// 	console.log("test",tasks);
-// 	const count = ref(tasks.filter(todo => todo.finished).length);
-// 	console.log(count.value);
-// 	return count.value;
-// }
+function countFinished(tasks) {
+	console.log("test",tasks);
+	const count = ref(tasks.filter(todo => todo.finished).length);
+	console.log(count.value);
+	let result = "finished " + count.value + " of " + tasks.length + " tasks";
+	return result;
+}
 //let finishedTasksOfAll = computed(() => "finished " + todo.value.filter(newTodo => newTodo.finished).length + " out of " + todo.value.length + " tasks");
 //const progressText = ref("error occurred");
 //const finishedAll = computed(() => todo.value.every(task => task.finished)); //check if all tasks are finished, returns true or false
@@ -198,7 +199,7 @@ const fullname = computed(() => name.value + " " + surname.value);
 			<accordion v-bind:indexTodo="indexTodo" v-bind:todo="todo" v-bind:warningState="warningsData[indexTodo].show" v-on:created="addNewTask" v-on:hidden="hideWarning(indexTodo)">
 				<template #header>
 					<h1 style="text-align: center">{{ todo.name }}</h1>
-					
+					<p style="text-align:center">{{ countFinished(todo.tasks) }}</p>
 				</template>
 				<template v-for="(task, indexItem) in todo.tasks">
 					<todo-item v-bind:task="task.text" v-bind:indexTodo="indexTodo" v-bind:indexItem="indexItem" v-model="task.finished" v-on:changed="handleCheckboxToggle"></todo-item>
