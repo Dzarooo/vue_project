@@ -27,36 +27,27 @@
 
     function toggleWrapper() {
         let wrapper = document.getElementById("wrapper" + props.indexTodo);
-        //let arrow = document.getElementById("arrow" + wrapperId);
+        let arrow = document.getElementById("arrow" + props.indexTodo);
 
         if(wrapper.style.gridTemplateRows == "0fr") {
             wrapper.style.gridTemplateRows = "1fr";
+            arrow.style.transform = "";
         }
         else {
             wrapper.style.gridTemplateRows = "0fr";
+            arrow.style.transform = "rotate(180deg)";
         }
 
         //console.log(props.todo);
-
-        // if (wrapper.classList.contains("[grid-template-rows:1fr]")) {
-        //     arrow.style.transform = "";
-        // } else {
-        //     arrow.style.transform = "rotate(180deg)";
-        // }
     }
 
     function closeWrapper() {
         let wrapper = document.getElementById("wrapper" + props.indexTodo);
-        //let arrow = document.getElementById("arrow" + wrapperId);
+        let arrow = document.getElementById("arrow" + props.indexTodo);
         wrapper.style.gridTemplateRows = "0fr";
-
+        arrow.style.transform = "rotate(180deg)";
+        
         //console.log(props.todo);
-
-        // if (wrapper.classList.contains("[grid-template-rows:1fr]")) {
-        //     arrow.style.transform = "";
-        // } else {
-        //     arrow.style.transform = "rotate(180deg)";
-        // }
     }
 
     function addNewTask(newTaskTextStatic, indexTodo) {
@@ -93,7 +84,10 @@
 <template>
     <div style="background-color:rgb(39, 39, 39); border-radius:20px; padding:15px; margin-bottom:15px">
 
-        <div v-on:click="toggleWrapper"><slot name="header"></slot></div>
+        <div v-on:click="toggleWrapper" style="display: flex; justify-content: space-between; align-items: center; cursor: pointer;">
+            <div><slot name="header"></slot></div>
+            <div :id="'arrow'+props.indexTodo" style="transform:rotate(180deg); transition-duration:300ms"><i class="bi bi-caret-up-fill" style="font-size:30px"></i></div>
+        </div>
 
         
         <div :id="'wrapper'+props.indexTodo"  style="display: grid; grid-template-rows: 0fr; overflow:hidden; transition-property:all; transition-duration:300ms;">
