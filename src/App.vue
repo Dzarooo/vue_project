@@ -96,7 +96,7 @@ function addNewTodo() {
     	    name: newTodoText.value,
     	    tasks: [],
     	});
-		
+
 		warningsData.value.push({
 			show:false,
 			hidden:false,
@@ -143,7 +143,7 @@ for(let i = 0; i < todos.value.length; ++i) {
 };
 
 function hideWarning(index) {
-	console.log(index);
+	//console.log(index);
 	warningsData.value[index].hidden = true;
 	warningsData.value[index].show = false;
 }
@@ -152,6 +152,15 @@ function handleCheckboxToggle(indexItem, indexTodo) {
 	//console.log(indexTodo, indexItem);
 	//console.log(count)
 	todos.value[indexTodo].tasks[indexItem].finished = !todos.value[indexTodo].tasks[indexItem].finished
+}
+
+const accordionComponents = ref();
+
+function collapseAllTodos() {
+	for(const accordion of accordionComponents.value) {
+		console.log(accordion);
+		accordion.closeWrapper();
+	}
 }
 
 
@@ -190,6 +199,7 @@ const fullname = computed(() => name.value + " " + surname.value);
 
 		<!--todo-->
 		<div style="background-color:rgb(39, 39, 39); border-radius:20px; padding:15px; margin-bottom:15px; display:flex; flex-direction:column; align-items:center">
+			<button v-on:click="collapseAllTodos">Collapse all Todos</button>
 			<h1>Add New Todo</h1>
 			<div>
 				<input v-on:input="updateNewTodoText" type="text" placeholder="New todo name" v-on:keypress.enter="addNewTodo">
@@ -197,7 +207,7 @@ const fullname = computed(() => name.value + " " + surname.value);
 			</div>
 		</div>
 		<template v-for="(todo, indexTodo) in todos">
-			<accordion v-bind:indexTodo="indexTodo" v-bind:todo="todo" v-bind:warningState="warningsData[indexTodo].show" v-on:created="addNewTask" v-on:hidden="hideWarning(indexTodo)">
+			<accordion v-bind:indexTodo="indexTodo" v-bind:todo="todo" v-bind:warningState="warningsData[indexTodo].show" v-on:created="addNewTask" v-on:hidden="hideWarning(indexTodo)" ref="accordionComponents">
 				<template #header>
 					<h1 style="text-align: center">{{ todo.name }}</h1>
 					<p style="text-align:center">{{ countFinished(todo.tasks) }}</p>
