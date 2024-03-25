@@ -84,6 +84,26 @@ const todos = ref([
 		}
 ]);
 
+const newTodoText = ref("");
+
+function updateNewTodoText(event) {
+	newTodoText.value = event.target.value;
+}
+
+function addNewTodo() {
+	if(newTodoText.value != "") {
+		todos.value.push({
+    	    name: newTodoText.value,
+    	    tasks: [],
+    	});
+		
+		warningsData.value.push({
+			show:false,
+			hidden:false,
+		});
+	}
+}
+
 
 function countFinished(tasks) {
 	//console.log("test",tasks);
@@ -92,9 +112,6 @@ function countFinished(tasks) {
 	let result = "finished " + count.value + " of " + tasks.length + " tasks";
 	return result;
 }
-//let finishedTasksOfAll = computed(() => "finished " + todo.value.filter(newTodo => newTodo.finished).length + " out of " + todo.value.length + " tasks");
-//const progressText = ref("error occurred");
-//const finishedAll = computed(() => todo.value.every(task => task.finished)); //check if all tasks are finished, returns true or false
 
 function addNewTask(newTaskTextStatic, indexTodo) {
 	console.log("app vue received: ", newTaskTextStatic, indexTodo);
@@ -130,29 +147,6 @@ function hideWarning(index) {
 	warningsData.value[index].hidden = true;
 	warningsData.value[index].show = false;
 }
-
-// watch(todo, (newTodo) => {
-// 	if(watchActive) {
-// 		if(newTodo.length > 5) {
-// 			showWarning.value = true;
-// 			watchActive = false;
-// 		}
-// 	}
-// 	// console.log(newTodo.filter(newTodo => newTodo.finished).length + 3);
-// 	// console.log(newTodo.length);
-// 	if(newTodo.filter(newTodo => newTodo.finished).length == 0) {
-// 		progressText.value = "Time to get some work done";
-// 	}
-// 	else if(newTodo.filter(newTodo => newTodo.finished).length == newTodo.length) {
-// 		progressText.value = "All done!";
-// 	}
-// 	else if(newTodo.filter(newTodo => newTodo.finished).length + 3 >= newTodo.length) {
-// 		progressText.value = "Almost done!";
-// 	}
-// 	else if(newTodo.filter(newTodo => newTodo.finished).length > 0) {
-// 		progressText.value = "It's all systems go";
-// 	}
-// }, {deep:true, immediate:true});
 
 function handleCheckboxToggle(indexItem, indexTodo) {
 	//console.log(indexTodo, indexItem);
@@ -195,6 +189,13 @@ const fullname = computed(() => name.value + " " + surname.value);
 		</div>
 
 		<!--todo-->
+		<div style="background-color:rgb(39, 39, 39); border-radius:20px; padding:15px; margin-bottom:15px; display:flex; flex-direction:column; align-items:center">
+			<h1>Add New Todo</h1>
+			<div>
+				<input v-on:input="updateNewTodoText" type="text" placeholder="New todo name" v-on:keypress.enter="addNewTodo">
+				<button v-on:click="addNewTodo">Dodaj</button>
+			</div>
+		</div>
 		<template v-for="(todo, indexTodo) in todos">
 			<accordion v-bind:indexTodo="indexTodo" v-bind:todo="todo" v-bind:warningState="warningsData[indexTodo].show" v-on:created="addNewTask" v-on:hidden="hideWarning(indexTodo)">
 				<template #header>
