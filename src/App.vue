@@ -4,5 +4,5 @@
 </script>
 
 <template>
-  <GitHubCard></GitHubCard>
+  <GitHubCard username="https://api.github.com/users/MattMoszczynski"></GitHubCard>
 </template>
