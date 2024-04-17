@@ -42,7 +42,7 @@
     <div class="min-w-[300px] w-[300px] min-h-[400px] p-10 shadow-lg bg-white rounded-sm">
         <template v-if="data != null">
             <div class="w-full flex flex-col items-center mb-8">
-                <img class="w-[100px] h-[100px]" src="https://static.vecteezy.com/system/resources/thumbnails/019/896/012/small_2x/female-user-avatar-icon-in-flat-design-style-person-signs-illustration-png.png">
+                <img class="w-[100px] h-[100px]" :src="data.avatar_url">
                 <h1 class="text-2xl">{{ data.login }}</h1>
                 <p class="text-sm">{{ data.name }}</p>
             </div>
