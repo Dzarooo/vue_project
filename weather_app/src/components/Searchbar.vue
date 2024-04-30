@@ -11,41 +11,21 @@
     
 
     function search() {
-        console.log(searchInput.value);
         if(searchInput.value != "") {
-            fetch(
-				`https://api.openweathermap.org/data/2.5/weather?q=${searchInput.value}&appid=f679cb1f60918bd9e72eece1168b0c17&lang=pl`
-			    )
-				.then((response) => response.json())
-				.then((data) => {
-                    if(data.message) {
-                        throw new Error(data.message);
-                        console.error(data.message);
-                    }
-                    else {
-                        weatherData.value = data;
-                        emits('searched', weatherData.value);
-                        //console.log(weatherData.value)
-                    }
-				})
-				.catch((error) => {
-					console.error('Error fetching weather data:\n', error.message);
-				})
-				.finally(() => {
-				});
+            emits('searched', searchInput.value);
         }
     }
 
 </script>
 
 <template>
-    <div class="w-fit h-fit flex gap-2 bg-[rgba(255,255,255,0.5)] border-solid border-[1px] border-slate-500 rounded-full items-center justify-around px-2 shadow-md">
-        <input v-model="searchInput" class="w-[400px] appearance-none rounded-full p-1 outline-none text-slate-500" placeholder="Search for city...">
+    <div class="w-fit h-fit flex gap-2 bg-transparent border-solid border-[1px] border-slate-300 rounded-full items-center justify-around px-2 shadow-md">
+        <input v-model="searchInput" v-on:keyup.enter="search()" class="w-[400px] appearance-none rounded-full p-1 outline-none text-slate-200 bg-transparent placeholder:text-slate-200" placeholder="Search for city...">
         <div class="[transform:translateY(-7%)] select-none">
-            <p class="text-slate-500">|</p>
+            <p class="text-slate-200">|</p>
         </div>
         <div v-on:click="search()" class="cursor-pointer">
-            <i class="bi bi-search text-slate-500 hover:text-slate-900"></i>
+            <i class="bi bi-search text-slate-200 hover:text-slate-100"></i>
         </div>
     </div>
 </template>
