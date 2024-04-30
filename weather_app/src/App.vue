@@ -3,12 +3,12 @@
   import CityWeather from './components/CityWeather.vue';
   import { ref } from 'vue';
 
-  let searchData = "";
+  const searchData = ref("");
 
   function forwardSearchResult(searchQuery) {
     console.log("data received in App.vue");
     console.log(searchQuery);
-    searchData = searchQuery;
+    searchData.value = searchQuery;
   }
 
 </script>
