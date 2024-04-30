@@ -4,17 +4,29 @@
     const searchInput = ref("");
     const weatherData = ref({});
 
+    const emits = defineEmits([
+        'searched'
+    ]);
+
     
 
     function search() {
         console.log(searchInput.value);
         if(searchInput.value != "") {
             fetch(
-				`https://api.openweathermap.org/data/2.5/weather?q=${searchInput.value}&appid=36bb972eb44abc7137a2a84bd63afd71&lang=pl`
+				`https://api.openweathermap.org/data/2.5/weather?q=${searchInput.value}&appid=f679cb1f60918bd9e72eece1168b0c17&lang=pl`
 			    )
 				.then((response) => response.json())
 				.then((data) => {
-                    weatherData.value = data;
+                    if(data.message) {
+                        throw new Error(data.message);
+                        console.error(data.message);
+                    }
+                    else {
+                        weatherData.value = data;
+                        emits('searched', weatherData.value);
+                        //console.log(weatherData.value)
+                    }
 				})
 				.catch((error) => {
 					console.error('Error fetching weather data:\n', error.message);
