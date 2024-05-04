@@ -13,13 +13,19 @@
     watch(() => props.searchQuery, (newValue, oldValue) => {
         currentSearchQuery.value = newValue;
 
-        console.log("Prop searchResult changed in CityWeather.vue");
-        console.log("New value:", newValue);
+        console.log("Prop searchResult changed in CityWeather.vue:", newValue);
 
         fetchData();
     });
 
-    const weatherData = ref({});
+    const todayWeatherData = ref({});
+    const futureWeatherData = ref({
+        one: {},
+        two: {},
+        three: {},
+        four: {},
+        five: {},
+    });
     const searched = ref(false);
 
     const iconMap = {
@@ -44,12 +50,13 @@
 	};
 
     function setIcon(icon) {
-        console.log(icon);
+        //console.log(icon);
         return iconMap[icon];
     }
 
     function fetchData() {
         if(props.searchQuery !== "") {
+            //fetch today weather
             fetch(
 	        	`https://api.openweathermap.org/data/2.5/weather?q=${currentSearchQuery.value}&appid=f679cb1f60918bd9e72eece1168b0c17&units=metric&lang=pl`
 	            )
@@ -79,34 +86,162 @@
                             const minutesC = c.getMinutes();
                             const sunset = hourC + ":" + minutesC;
 
-                            weatherData.value = {
+                            todayWeatherData.value = {
                                 name: data.name,
                                 temp: data.main.temp.toFixed(1),
                                 temp_min: data.main.temp_min.toFixed(1),
                                 temp_max: data.main.temp_max.toFixed(1),
                                 date: date,
+                                day: day,
                                 description: data.weather[0].description,
                                 sunrise: sunrise,
                                 sunset: sunset,
                                 wind: data.wind.speed,
                                 icon: setIcon(data.weather[0].icon),
                             }
-                            console.log(weatherData.value)
+                            console.log(todayWeatherData.value)
                             searched.value = true;
                         }
 	        	})
+                .then(() => {
+                    fetchFutureWeatherData();
+                })
 	        	.catch((error) => {
-	        		console.error('Error fetching weather data:\n', error.message);
+	        		console.error('Error fetching today weather data:\n', error.message);
 	        	})
 	        	.finally(() => {
 	        	});
-            }
-        else {
+        } else {
             console.warn("searchQuery is empty in CityWeather.vue");
         }
     }
 
-    fetchData();
+    function fetchFutureWeatherData() {
+            //fetch weather for future days
+            fetch(
+                `https://api.openweathermap.org/data/2.5/forecast?q=${currentSearchQuery.value}&appid=f679cb1f60918bd9e72eece1168b0c17&units=metric&lang=pl`
+                )
+                .then((response) => response.json())
+                .then((data) => {
+                        if(data.message) {
+                            console.error(data.message);
+                            throw new Error(data.message);
+                        }
+                        else {
+                            console.log(data);
+
+                            //variables for loop
+                            let day = null;
+                            let objectIndex = 0; //to which index in futureWeatherData append data
+                            let timestampsCounter = 0; //8 timestamps equals one day
+
+                            //variables for data reading in loop
+                            let tempDay = 0;
+                            let tempNight = 0;
+
+                            for(let i = 0; i < 5; ++i) { //api returns data for 5 days, that's why i < 5
+                                for(let j = 0; j < 8; ++j) { //api returns 8 timestamps for each day, that's why j < 8
+                                    let date = new Date(data.list[(j + (i * 8))].dt * 1000);
+                                    let dayDate = date.getDate();
+
+                                    //set objectIndex
+                                    if(dayDate != day && dayDate !== todayWeatherData.value.day) {
+                                        day = dayDate;
+                                        objectIndex++;
+                                    }
+
+                                    if(dayDate === todayWeatherData.value.day) { //skip today because we are displaying data for future days
+                                        continue
+                                    }
+                                    else { //this else is "endpoint" - here is everything with reading and appending data
+
+                                        if(timestampsCounter == 8) { //one day has 8 timestamps, in this "if" append all data to futureWeatherData
+                                            console.log("new day");
+                                            if(objectIndex-1 == 5) {
+                                                timestampsCounter = 0;
+                                                tempDay = 0;
+                                                tempNight = 0;
+                                                continue;
+                                            }
+
+                                            //append data to futureWeatherData
+                                            console.log("objectIndex: ", objectIndex)
+                                            switch (objectIndex-1) {
+                                                case 1:
+                                                    futureWeatherData.value.one = {
+                                                        tempDay: (((tempDay.toFixed(1)*10) / 4) / 10).toFixed(1),
+                                                        tempNight: (((tempNight.toFixed(1)*10) / 3) / 10).toFixed(1),
+                                                    }
+                                                    break;
+
+                                                case 2:
+                                                    futureWeatherData.value.two = {
+                                                        tempDay: (((tempDay.toFixed(1)*10) / 4) / 10).toFixed(1),
+                                                        tempNight: (((tempNight.toFixed(1)*10) / 3) / 10).toFixed(1),
+                                                    }
+                                                    break;
+
+                                                case 3:
+                                                    futureWeatherData.value.three = {
+                                                        tempDay: (((tempDay.toFixed(1)*10) / 4) / 10).toFixed(1),
+                                                        tempNight: (((tempNight.toFixed(1)*10) / 3) / 10).toFixed(1),
+                                                    }
+                                                    break;
+
+                                                case 4:
+                                                    futureWeatherData.value.four = {
+                                                        tempDay: (((tempDay.toFixed(1)*10) / 4) / 10).toFixed(1),
+                                                        tempNight: (((tempNight.toFixed(1)*10) / 3) / 10).toFixed(1),
+                                                    }
+                                                    break;
+
+                                                case 5:
+                                                    futureWeatherData.value.five = {
+                                                        tempDay: (((tempDay.toFixed(1)*10) / 4) / 10).toFixed(1),
+                                                        tempNight: (((tempNight.toFixed(1)*10) / 3) / 10).toFixed(1),
+                                                    }
+                                                    break;
+                                            
+                                                default:
+                                                    break;
+                                                }
+
+                                            //restore loop variables to default on new day
+                                            timestampsCounter = 0;
+                                            tempDay = 0;
+                                            tempNight = 0;
+                                        }
+
+                                        timestampsCounter++;
+                                        
+                                        if(timestampsCounter > 3) { // 9a.m. and later
+                                            if(timestampsCounter !== 8) {
+                                                tempDay += data.list[(j + (i * 8))].main.temp;
+                                            }
+                                            console.log(1, objectIndex, "day:", dayDate, (j + (i * 8)), data.list[(j + (i * 8))].dt_txt, data.list[(j + (i * 8))].main.temp);
+                                        }
+                                        else { // before 9a.m.
+                                            tempNight += data.list[(j + (i * 8))].main.temp;
+                                            console.log(2, objectIndex, "day:", dayDate, (j + (i * 8)), data.list[(j + (i * 8))].dt_txt, data.list[(j + (i * 8))].main.temp);
+                                        }
+
+                                    }
+                                }
+                            }
+                            futureWeatherData.value.five = {
+                                tempDay: (((tempDay.toFixed(1)*10) / 4) / 10).toFixed(1),
+                                tempNight: (((tempNight.toFixed(1)*10) / 3) / 10).toFixed(1),
+                            }
+                            console.log(futureWeatherData.value);
+                            
+                        }
+                    }
+                )
+                .catch((error) => {
+	        		console.error('Error fetching today weather data:\n', error.message);
+                })
+                .finally();
+    }
 
 </script>
 
@@ -117,23 +252,23 @@
                 <div class="text-[#FFFFF0] flex justify-between font-thin">
 
                     <div>
-                        <h1 class="text-8xl">{{ weatherData.name }}</h1>
-                        <p class="text-4xl text-slate-300 mt-4">{{ weatherData.date }}</p>
+                        <h1 class="text-8xl">{{ todayWeatherData.name }}</h1>
+                        <p class="text-4xl text-slate-300 mt-4">{{ todayWeatherData.date }}</p>
                         <div class="w-fit">
-                            <img class="w-[400px] h-[400px] mt-10" :src="weatherData.icon">
-                            <p class="text-4xl text-slate-300 text-center">{{ weatherData.description }}</p>
+                            <img class="w-[400px] h-[400px] mt-10" :src="todayWeatherData.icon">
+                            <p class="text-4xl text-slate-300 text-center">{{ todayWeatherData.description }}</p>
                         </div>
                     </div>
 
                     <div class="flex">
                         <div class="flex flex-col items-center">
-                            <h1 class="text-[20rem] [line-height:1] flex items-start">{{ weatherData.temp }}</h1>   
-                            <p class="text-8xl text-slate-300">{{ weatherData.temp_min }}&deg; / {{ weatherData.temp_max }}&deg;</p>
+                            <h1 class="text-[20rem] [line-height:1] flex items-start">{{ todayWeatherData.temp }}</h1>   
+                            <p class="text-8xl text-slate-300">{{ todayWeatherData.temp_min }}&deg; / {{ todayWeatherData.temp_max }}&deg;</p>
                             <div class="w-full flex justify-center gap-10 mt-10">
-                                <p class="text-5xl font-thin"><i class="bi bi-sunrise"></i> {{ weatherData.sunrise }}</p>
-                                <p class="text-5xl font-thin">{{ weatherData.sunset }} <i class="bi bi-sunset"></i></p>
+                                <p class="text-5xl font-thin"><i class="bi bi-sunrise"></i> {{ todayWeatherData.sunrise }}</p>
+                                <p class="text-5xl font-thin">{{ todayWeatherData.sunset }} <i class="bi bi-sunset"></i></p>
                             </div>
-                            <div class="text-5xl flex gap-2 mt-3"><i class="bi bi-wind"></i><p>{{ weatherData.wind }}km</p></div>
+                            <div class="text-5xl flex gap-2 mt-3"><i class="bi bi-wind"></i><p>{{ todayWeatherData.wind }}km</p></div>
                         </div>
                         <p><span class="text-8xl">&deg;C</span></p>
                     </div>

@@ -6,8 +6,7 @@
   const searchData = ref("");
 
   function forwardSearchResult(searchQuery) {
-    console.log("data received in App.vue");
-    console.log(searchQuery);
+    console.log("searchQuery received in App.vue:", searchQuery);
     searchData.value = searchQuery;
   }
 
