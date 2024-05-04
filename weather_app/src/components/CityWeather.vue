@@ -27,6 +27,8 @@
         five: {},
     });
     const searched = ref(false);
+    const isLoading = ref(false);
+    const isCityFound = ref(false);
 
     const iconMap = {
 		'01d': 'https://d.iplsc.com/weather/svg-icons/1.svg',
@@ -49,7 +51,6 @@
 		'50n': 'https://d.iplsc.com/weather/svg-icons/37.svg',
 	};
 
-    const isLoading = ref(false);
 
     function setIcon(icon) {
         //console.log(icon);
@@ -59,6 +60,8 @@
     function fetchData() {
         if(props.searchQuery !== "") {
             isLoading.value = true;
+            searched.value = true;
+            isCityFound.value = true;
             //fetch today weather
             fetch(
 	        	`https://api.openweathermap.org/data/2.5/weather?q=${currentSearchQuery.value}&appid=f679cb1f60918bd9e72eece1168b0c17&units=metric&lang=pl`
@@ -67,6 +70,7 @@
 	        	.then((data) => {
                         if(data.message) {
                             console.error(data.message);
+                            isCityFound.value = false;
                             throw new Error(data.message);
                         }
                         else {
@@ -103,7 +107,7 @@
                                 icon: setIcon(data.weather[0].icon),
                             }
                             console.log(todayWeatherData.value)
-                            searched.value = true;
+                            isCityFound.value = true;
                         }
 	        	})
                 .then(() => {
@@ -112,8 +116,6 @@
 	        	.catch((error) => {
 	        		console.error('Error fetching today weather data:\n', error.message);
 	        	})
-	        	.finally(() => {
-	        	});
         } else {
             console.warn("searchQuery is empty in CityWeather.vue");
         }
@@ -289,7 +291,11 @@
     <div class="w-full flex-1 h-full flex flex-col">
         <div class="w-full flex-1 flex flex-col">
             <div v-if="searched" class="flex-1 flex flex-col justify-center items-center">
-                <div v-if="isLoading" class="loadingContainer">
+                <div v-if="!isCityFound" class="text-slate-300 flex flex-col items-center justify-center">
+                    <i class="bi bi-eye-slash text-8xl"></i>
+                    <p class="text-3xl">City not found.</p>
+                </div>
+                <div v-else-if="isLoading" class="loadingContainer">
                     <div class="dot"></div>
                     <div class="dot"></div>
                     <div class="dot"></div>
