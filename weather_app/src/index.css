@@ -6,13 +6,52 @@
     .websiteGradient {
         background-image: linear-gradient(to top, #505285 0%, #585e92 12%, #65689f 25%, #7474b0 37%, #7e7ebb 50%, #8389c7 62%, #9795d4 75%, #a2a1dc 87%, #b5aee4 100%);
     }
+
     .futureDaysDivBorderGradient {
-        border-image: 
-                linear-gradient(
-                    170deg,
-                    white,
-                    rgb(151, 151, 151),
-                    rgba(0, 0, 0, 0)
-                ) 2;
+        border-image:
+            linear-gradient(170deg,
+                white,
+                rgb(151, 151, 151),
+                rgba(0, 0, 0, 0)) 2;
     }
+
+    .loadingContainer {
+        display:flex;
+        gap:10px;
+    }
+    .loadingContainer > .dot {
+        border-radius:100%;
+        width:50px;
+        aspect-ratio: 1/1;
+        background-color:transparent;
+        transform:scale(0);
+    }
+
+    .loadingContainer >.dot:nth-child(1) {
+        animation: loadingAnimation 1s ease-in-out 0s infinite;
+    }
+    .loadingContainer >.dot:nth-child(2) {
+        animation: loadingAnimation 1s ease-in-out 0.25s infinite;
+    }
+    .loadingContainer >.dot:nth-child(3) {
+        animation: loadingAnimation 1s ease-in-out 0.5s infinite;
+    }
+
+    @keyframes loadingAnimation {
+        0% {
+            transform:scale(0);
+            background-color:transparent;
+        }
+        50% {
+            transform:scale(1);
+            background-color: #FFFFF0;
+        }
+        100% {
+            transform:scale(0);
+            background-color:transparent;
+        }
+    }
+
+
+    
 }

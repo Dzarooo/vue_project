@@ -49,6 +49,8 @@
 		'50n': 'https://d.iplsc.com/weather/svg-icons/37.svg',
 	};
 
+    const isLoading = ref(false);
+
     function setIcon(icon) {
         //console.log(icon);
         return iconMap[icon];
@@ -56,6 +58,7 @@
 
     function fetchData() {
         if(props.searchQuery !== "") {
+            isLoading.value = true;
             //fetch today weather
             fetch(
 	        	`https://api.openweathermap.org/data/2.5/weather?q=${currentSearchQuery.value}&appid=f679cb1f60918bd9e72eece1168b0c17&units=metric&lang=pl`
@@ -72,8 +75,8 @@
                             const year = a.getFullYear();
                             const month = months[a.getMonth()];
                             const day = a.getDate();
-                            const daysOfWeek = ['Poniedziałek','Wtorek','Środa','Czwartek','Piątek','Sobota','Niedziela'];
-                            const dayOfWeek = daysOfWeek[a.getDay()-1];
+                            const daysOfWeek = ['Niedziela','Poniedziałek','Wtorek','Środa','Czwartek','Piątek','Sobota'];
+                            const dayOfWeek = daysOfWeek[a.getDay()];
                             const date = dayOfWeek+ ", " + day + " " + month + " " + year; 
 
                             const b = new Date(data.sys.sunrise * 1000);
@@ -128,7 +131,7 @@
                             throw new Error(data.message);
                         }
                         else {
-                            console.log(data);
+                            //console.log(data);
 
                             //variables for loop
                             let day = null;
@@ -159,7 +162,7 @@
                                     else { //this else is "endpoint" - here is everything with reading and appending data
 
                                         if(timestampsCounter == 8) { //one day has 8 timestamps, in this "if" append all data to futureWeatherData
-                                            console.log("new day");
+                                            //console.log("new day");
                                             if(objectIndex-1 == 5) {
                                                 timestampsCounter = 0;
                                                 tempDay = 0;
@@ -168,14 +171,14 @@
                                             }
 
                                             //append data to futureWeatherData
-                                            console.log("objectIndex: ", objectIndex)
+                                            //console.log("objectIndex: ", objectIndex)
                                             switch (objectIndex-1) {
                                                 case 1:
                                                     futureWeatherData.value.one = {
                                                         tempDay: (((tempDay.toFixed(1)*10) / 4) / 10).toFixed(1),
                                                         tempNight: (((tempNight.toFixed(1)*10) / 3) / 10).toFixed(1),
                                                         wind: (((wind.toFixed(1)*10) / 4) / 10).toFixed(1),
-                                                        precipitationProbability: precipitationProbability * 100,
+                                                        precipitationProbability: (precipitationProbability * 100).toFixed(0),
                                                         date: dateD,
                                                     }
                                                     break;
@@ -185,7 +188,7 @@
                                                         tempDay: (((tempDay.toFixed(1)*10) / 4) / 10).toFixed(1),
                                                         tempNight: (((tempNight.toFixed(1)*10) / 3) / 10).toFixed(1),
                                                         wind: (((wind.toFixed(1)*10) / 4) / 10).toFixed(1),
-                                                        precipitationProbability: precipitationProbability * 100,
+                                                        precipitationProbability: (precipitationProbability * 100).toFixed(0),
                                                         date: dateD,
                                                     }
                                                     break;
@@ -195,7 +198,7 @@
                                                         tempDay: (((tempDay.toFixed(1)*10) / 4) / 10).toFixed(1),
                                                         tempNight: (((tempNight.toFixed(1)*10) / 3) / 10).toFixed(1),
                                                         wind: (((wind.toFixed(1)*10) / 4) / 10).toFixed(1),
-                                                        precipitationProbability: precipitationProbability * 100,
+                                                        precipitationProbability: (precipitationProbability * 100).toFixed(0),
                                                         date: dateD,
                                                     }
                                                     break;
@@ -205,7 +208,7 @@
                                                         tempDay: (((tempDay.toFixed(1)*10) / 4) / 10).toFixed(1),
                                                         tempNight: (((tempNight.toFixed(1)*10) / 3) / 10).toFixed(1),
                                                         wind: (((wind.toFixed(1)*10) / 4) / 10).toFixed(1),
-                                                        precipitationProbability: precipitationProbability * 100,
+                                                        precipitationProbability: (precipitationProbability * 100).toFixed(0),
                                                         date: dateD,
                                                     }
                                                     break;
@@ -215,7 +218,7 @@
                                                         tempDay: (((tempDay.toFixed(1)*10) / 4) / 10).toFixed(1),
                                                         tempNight: (((tempNight.toFixed(1)*10) / 3) / 10).toFixed(1),
                                                         wind: (((wind.toFixed(1)*10) / 4) / 10).toFixed(1),
-                                                        precipitationProbability: precipitationProbability * 100,
+                                                        precipitationProbability: (precipitationProbability * 100).toFixed(0),
                                                         date: dateD,
                                                     }
                                                     break;
@@ -241,10 +244,9 @@
                                                 const yearD = d.getFullYear();
                                                 const monthD = monthsD[d.getMonth()];
                                                 const dayD = d.getDate();
-                                                const daysOfWeekD = ['Poniedziałek','Wtorek','Środa','Czwartek','Piątek','Sobota','Niedziela'];
-                                                const dayOfWeekD = daysOfWeekD[d.getDay()-1];
+                                                const daysOfWeekD = ['Niedziela','Poniedziałek','Wtorek','Środa','Czwartek','Piątek','Sobota'];
+                                                const dayOfWeekD = daysOfWeekD[d.getDay()];
                                                 dateD = dayOfWeekD+ ", " + dayD + " " + monthD + " " + yearD;
-                                                console.log(dateD);
                                             }
                                             if(timestampsCounter !== 8) {
                                                 tempDay += data.list[(j + (i * 8))].main.temp;
@@ -253,11 +255,11 @@
                                                     precipitationProbability = data.list[(j + (i * 8))].pop;
                                                 }
                                             }
-                                            console.log(1, objectIndex, "day:", dayDate, (j + (i * 8)), data.list[(j + (i * 8))].dt_txt, data.list[(j + (i * 8))].main.temp, data.list[(j + (i * 8))].pop);
+                                            //console.log(1, objectIndex, "day:", dayDate, (j + (i * 8)), data.list[(j + (i * 8))].dt_txt, data.list[(j + (i * 8))].main.temp, data.list[(j + (i * 8))].pop);
                                         }
                                         else { // before 9a.m.
                                             tempNight += data.list[(j + (i * 8))].main.temp;
-                                            console.log(2, objectIndex, "day:", dayDate, (j + (i * 8)), data.list[(j + (i * 8))].dt_txt, data.list[(j + (i * 8))].main.temp);
+                                            //console.log(2, objectIndex, "day:", dayDate, (j + (i * 8)), data.list[(j + (i * 8))].dt_txt, data.list[(j + (i * 8))].main.temp);
                                         }
 
                                     }
@@ -267,7 +269,7 @@
                                 tempDay: (((tempDay.toFixed(1)*10) / 4) / 10).toFixed(1),
                                 tempNight: (((tempNight.toFixed(1)*10) / 3) / 10).toFixed(1),
                                 wind: (((wind.toFixed(1)*10) / 4) / 10).toFixed(1),
-                                precipitationProbability: precipitationProbability * 100,
+                                precipitationProbability: (precipitationProbability * 100).toFixed(0),
                                 date: dateD,
                             }
                             console.log(futureWeatherData.value);
@@ -278,7 +280,7 @@
                 .catch((error) => {
 	        		console.error('Error fetching today weather data:\n', error.message);
                 })
-                .finally();
+                .finally(isLoading.value = false);
     }
 
 </script>
@@ -286,50 +288,59 @@
 <template>
     <div class="w-full flex-1 h-full flex flex-col">
         <div class="w-full flex-1 flex flex-col">
-            <div v-if="searched" class="flex-1 flex flex-col justify-around gap-10">
-                <div class="text-[#FFFFF0] flex justify-between font-thin mx-20">
-
-                    <div>
-                        <h1 class="text-8xl">{{ todayWeatherData.name }}</h1>
-                        <p class="text-4xl text-slate-300 mt-4">{{ todayWeatherData.date }}</p>
-                        <div class="w-fit">
-                            <img class="w-[400px] h-[400px] mt-10" :src="todayWeatherData.icon">
-                            <p class="text-4xl text-slate-300 text-center">{{ todayWeatherData.description }}</p>
-                        </div>
-                    </div>
-
-                    <div class="flex">
-                        <div class="flex flex-col items-center">
-                            <h1 class="text-[20rem] [line-height:1] flex items-start">{{ todayWeatherData.temp }}</h1>   
-                            <p class="text-8xl text-slate-300">{{ todayWeatherData.temp_min }}&deg; / {{ todayWeatherData.temp_max }}&deg;</p>
-                            <div class="w-full flex justify-center gap-10 mt-10">
-                                <p class="text-5xl font-thin"><i class="bi bi-sunrise"></i> {{ todayWeatherData.sunrise }}</p>
-                                <p class="text-5xl font-thin">{{ todayWeatherData.sunset }} <i class="bi bi-sunset"></i></p>
-                            </div>
-                            <div class="text-5xl flex gap-2 mt-3"><i class="bi bi-wind"></i><p>{{ todayWeatherData.wind }}m/s</p></div>
-                        </div>
-                        <p><span class="text-8xl">&deg;C</span></p>
-                    </div>
-
+            <div v-if="searched" class="flex-1 flex flex-col justify-center items-center">
+                <div v-if="isLoading" class="loadingContainer">
+                    <div class="dot"></div>
+                    <div class="dot"></div>
+                    <div class="dot"></div>
                 </div>
-                <div class="text-[#FFFFF0] font-thin flex justify-between gap-5 overflow-x-auto mx-20">
-                    <template v-for="item in futureWeatherData">
-                        <div class="min-w-[300px] [aspect-ratio:3/2] border-solid border-2 futureDaysDivBorderGradient relative p-2 rounded-xl flex-1">
-                            <div class="absolute flex w-[calc(100%-16px)] h-[calc(100%-16px)] flex-col justify-center items-center">
-                                <div class="text-6xl flex items-center gap-2"><i class="bi bi-sun text-3xl [transform:translateY(3px)]"></i><p>{{ item.tempDay }}&deg;</p></div>
-                                <div class="text-3xl flex gap-1 items-center text-slate-300"><i class="bi bi-moon text-sm [transform:translateY(3px)]"></i><p>{{ item.tempNight }}&deg;</p></div>
-                            </div>
-                            <div class="h-full w-full flex flex-col justify-between">
-                                <div>
-                                    <p>{{ item.date }}</p>
-                                </div>
-                                <div class="flex justify-around gap-2">
-                                    <div class="flex gap-1"><i class="bi bi-wind"></i><p>{{ item.wind }}m/s</p></div>
-                                    <div class="flex gap-1"><i class="bi bi-cloud-drizzle"></i><p>{{ item.precipitationProbability }}%</p></div>
-                                </div>
+                <div v-else class="w-full flex-1 flex flex-col justify-around gap-10">
+                    <div class="text-[#FFFFF0] flex justify-between font-thin mx-20">
+
+                        <div>
+                            <h1 class="text-8xl">{{ todayWeatherData.name }}</h1>
+                            <p class="text-4xl text-slate-300 mt-4">{{ todayWeatherData.date }}</p>
+                            <div class="w-fit">
+                                <img class="w-[400px] h-[400px] mt-10" :src="todayWeatherData.icon">
+                                <p class="text-4xl text-slate-300 text-center">{{ todayWeatherData.description }}</p>
                             </div>
                         </div>
-                    </template>
+
+                        <div class="flex">
+                            <div class="flex flex-col items-center">
+                                <h1 class="text-[20rem] [line-height:1] flex items-start">{{ todayWeatherData.temp }}</h1>   
+                                <p class="text-8xl text-slate-300">{{ todayWeatherData.temp_min }}&deg; / {{ todayWeatherData.temp_max }}&deg;</p>
+                                <div class="w-full flex justify-center gap-10 mt-10">
+                                    <p class="text-5xl font-thin"><i class="bi bi-sunrise"></i> {{ todayWeatherData.sunrise }}</p>
+                                    <p class="text-5xl font-thin">{{ todayWeatherData.sunset }} <i class="bi bi-sunset"></i></p>
+                                </div>
+                                <div class="text-5xl flex gap-2 mt-3"><i class="bi bi-wind"></i><p>{{ todayWeatherData.wind }}m/s</p></div>
+                            </div>
+                            <p><span class="text-8xl">&deg;C</span></p>
+                        </div>
+
+                    </div>
+
+                    <div class="text-[#FFFFF0] font-thin flex justify-between gap-5 overflow-x-auto mx-20">
+                        <template v-for="item in futureWeatherData">
+                            <div class="min-w-[300px] [aspect-ratio:3/2] border-solid border-2 futureDaysDivBorderGradient relative p-2 rounded-xl flex-1">
+                                <div class="absolute flex w-[calc(100%-16px)] h-[calc(100%-16px)] flex-col justify-center items-center">
+                                    <div class="text-6xl flex items-center gap-2"><i class="bi bi-sun text-3xl [transform:translateY(3px)]"></i><p>{{ item.tempDay }}&deg;</p></div>
+                                    <div class="text-3xl flex gap-1 items-center text-slate-300"><i class="bi bi-moon text-sm [transform:translateY(3px)]"></i><p>{{ item.tempNight }}&deg;</p></div>
+                                </div>
+                                <div class="h-full w-full flex flex-col justify-between">
+                                    <div>
+                                        <p>{{ item.date }}</p>
+                                    </div>
+                                    <div class="flex justify-around gap-2">
+                                        <div class="flex gap-1"><i class="bi bi-wind"></i><p>{{ item.wind }}m/s</p></div>
+                                        <div class="flex gap-1"><i class="bi bi-cloud-drizzle"></i><p>{{ item.precipitationProbability }}%</p></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </template>
+                    </div>
+
                 </div>
             </div>
         </div>
