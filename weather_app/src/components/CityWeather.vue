@@ -96,7 +96,7 @@
                                 description: data.weather[0].description,
                                 sunrise: sunrise,
                                 sunset: sunset,
-                                wind: data.wind.speed,
+                                wind: data.wind.speed.toFixed(1),
                                 icon: setIcon(data.weather[0].icon),
                             }
                             console.log(todayWeatherData.value)
@@ -138,6 +138,9 @@
                             //variables for data reading in loop
                             let tempDay = 0;
                             let tempNight = 0;
+                            let wind = 0;
+                            let precipitationProbability = 0;
+                            let dateD;
 
                             for(let i = 0; i < 5; ++i) { //api returns data for 5 days, that's why i < 5
                                 for(let j = 0; j < 8; ++j) { //api returns 8 timestamps for each day, that's why j < 8
@@ -171,6 +174,9 @@
                                                     futureWeatherData.value.one = {
                                                         tempDay: (((tempDay.toFixed(1)*10) / 4) / 10).toFixed(1),
                                                         tempNight: (((tempNight.toFixed(1)*10) / 3) / 10).toFixed(1),
+                                                        wind: (((wind.toFixed(1)*10) / 4) / 10).toFixed(1),
+                                                        precipitationProbability: precipitationProbability * 100,
+                                                        date: dateD,
                                                     }
                                                     break;
 
@@ -178,6 +184,9 @@
                                                     futureWeatherData.value.two = {
                                                         tempDay: (((tempDay.toFixed(1)*10) / 4) / 10).toFixed(1),
                                                         tempNight: (((tempNight.toFixed(1)*10) / 3) / 10).toFixed(1),
+                                                        wind: (((wind.toFixed(1)*10) / 4) / 10).toFixed(1),
+                                                        precipitationProbability: precipitationProbability * 100,
+                                                        date: dateD,
                                                     }
                                                     break;
 
@@ -185,6 +194,9 @@
                                                     futureWeatherData.value.three = {
                                                         tempDay: (((tempDay.toFixed(1)*10) / 4) / 10).toFixed(1),
                                                         tempNight: (((tempNight.toFixed(1)*10) / 3) / 10).toFixed(1),
+                                                        wind: (((wind.toFixed(1)*10) / 4) / 10).toFixed(1),
+                                                        precipitationProbability: precipitationProbability * 100,
+                                                        date: dateD,
                                                     }
                                                     break;
 
@@ -192,6 +204,9 @@
                                                     futureWeatherData.value.four = {
                                                         tempDay: (((tempDay.toFixed(1)*10) / 4) / 10).toFixed(1),
                                                         tempNight: (((tempNight.toFixed(1)*10) / 3) / 10).toFixed(1),
+                                                        wind: (((wind.toFixed(1)*10) / 4) / 10).toFixed(1),
+                                                        precipitationProbability: precipitationProbability * 100,
+                                                        date: dateD,
                                                     }
                                                     break;
 
@@ -199,6 +214,9 @@
                                                     futureWeatherData.value.five = {
                                                         tempDay: (((tempDay.toFixed(1)*10) / 4) / 10).toFixed(1),
                                                         tempNight: (((tempNight.toFixed(1)*10) / 3) / 10).toFixed(1),
+                                                        wind: (((wind.toFixed(1)*10) / 4) / 10).toFixed(1),
+                                                        precipitationProbability: precipitationProbability * 100,
+                                                        date: dateD,
                                                     }
                                                     break;
                                             
@@ -210,15 +228,31 @@
                                             timestampsCounter = 0;
                                             tempDay = 0;
                                             tempNight = 0;
+                                            wind = 0;
+                                            precipitationProbability = 0;
                                         }
 
                                         timestampsCounter++;
                                         
                                         if(timestampsCounter > 3) { // 9a.m. and later
+                                            if(timestampsCounter == 0) {
+                                                const d = new Date(data.dt * 1000);
+                                                const monthsD = ['Styczeń','Luty','Marzec','Kwiecień','Maj','Czerwiec','Lipiec','Sierpień','Wrzesień','Październik','Listopad','Grudzień'];
+                                                const yearD = d.getFullYear();
+                                                const monthD = monthsD[d.getMonth()];
+                                                const dayD = d.getDate();
+                                                const daysOfWeekD = ['Poniedziałek','Wtorek','Środa','Czwartek','Piątek','Sobota','Niedziela'];
+                                                const dayOfWeekD = daysOfWeekD[d.getDay()-1];
+                                                dateD = dayOfWeekD+ ", " + dayD + " " + monthD + " " + yearD;
+                                            }
                                             if(timestampsCounter !== 8) {
                                                 tempDay += data.list[(j + (i * 8))].main.temp;
+                                                wind += data.list[(j + (i * 8))].wind.speed;
+                                                if(precipitationProbability < data.list[(j + (i * 8))].pop) {
+                                                    precipitationProbability = data.list[(j + (i * 8))].pop;
+                                                }
                                             }
-                                            console.log(1, objectIndex, "day:", dayDate, (j + (i * 8)), data.list[(j + (i * 8))].dt_txt, data.list[(j + (i * 8))].main.temp);
+                                            console.log(1, objectIndex, "day:", dayDate, (j + (i * 8)), data.list[(j + (i * 8))].dt_txt, data.list[(j + (i * 8))].main.temp, data.list[(j + (i * 8))].pop);
                                         }
                                         else { // before 9a.m.
                                             tempNight += data.list[(j + (i * 8))].main.temp;
@@ -231,6 +265,9 @@
                             futureWeatherData.value.five = {
                                 tempDay: (((tempDay.toFixed(1)*10) / 4) / 10).toFixed(1),
                                 tempNight: (((tempNight.toFixed(1)*10) / 3) / 10).toFixed(1),
+                                wind: (((wind.toFixed(1)*10) / 4) / 10).toFixed(1),
+                                precipitationProbability: precipitationProbability * 100,
+                                date: dateD,
                             }
                             console.log(futureWeatherData.value);
                             
@@ -268,11 +305,30 @@
                                 <p class="text-5xl font-thin"><i class="bi bi-sunrise"></i> {{ todayWeatherData.sunrise }}</p>
                                 <p class="text-5xl font-thin">{{ todayWeatherData.sunset }} <i class="bi bi-sunset"></i></p>
                             </div>
-                            <div class="text-5xl flex gap-2 mt-3"><i class="bi bi-wind"></i><p>{{ todayWeatherData.wind }}km</p></div>
+                            <div class="text-5xl flex gap-2 mt-3"><i class="bi bi-wind"></i><p>{{ todayWeatherData.wind }}m/s</p></div>
                         </div>
                         <p><span class="text-8xl">&deg;C</span></p>
                     </div>
 
+                </div>
+                <div class="text-[#FFFFF0] font-thin my-20 flex justify-between gap-5 overflow-x-auto">
+                    <template v-for="item in futureWeatherData">
+                        <div class="min-w-[300px] [aspect-ratio:3/2] border-solid border-2 futureDaysDivBorderGradient relative p-2 rounded-xl flex-1">
+                            <div class="absolute flex w-[calc(100%-16px)] h-[calc(100%-16px)] flex-col justify-center items-center">
+                                <div class="text-6xl flex items-center gap-2"><i class="bi bi-sun text-3xl [transform:translateY(3px)]"></i><p>{{ item.tempDay }}&deg;</p></div>
+                                <div class="text-3xl flex gap-1 items-center text-slate-300"><i class="bi bi-moon text-sm [transform:translateY(3px)]"></i><p>{{ item.tempNight }}&deg;</p></div>
+                            </div>
+                            <div class="h-full w-full flex flex-col justify-between">
+                                <div>
+                                    <p>5. Maj 2024, Poniedziałek</p>
+                                </div>
+                                <div class="flex justify-around gap-2">
+                                    <div class="flex gap-1"><i class="bi bi-wind"></i><p>{{ item.wind }}m/s</p></div>
+                                    <div class="flex gap-1"><i class="bi bi-cloud-drizzle"></i><p>{{ item.precipitationProbability }}%</p></div>
+                                </div>
+                            </div>
+                        </div>
+                    </template>
                 </div>
             </div>
         </div>
