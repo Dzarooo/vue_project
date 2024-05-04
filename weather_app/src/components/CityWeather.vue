@@ -283,10 +283,10 @@
 </script>
 
 <template>
-    <div class="w-full flex-1">
-        <div class="w-[calc(100%-10rem)] mt-40 mx-20">
-            <div v-if="searched">
-                <div class="text-[#FFFFF0] flex justify-between font-thin">
+    <div class="w-full flex-1 h-full flex flex-col">
+        <div class="w-full flex-1 flex flex-col">
+            <div v-if="searched" class="flex-1 flex flex-col justify-around gap-10">
+                <div class="text-[#FFFFF0] flex justify-between font-thin mx-20">
 
                     <div>
                         <h1 class="text-8xl">{{ todayWeatherData.name }}</h1>
@@ -311,7 +311,7 @@
                     </div>
 
                 </div>
-                <div class="text-[#FFFFF0] font-thin my-20 flex justify-between gap-5 overflow-x-auto">
+                <div class="text-[#FFFFF0] font-thin flex justify-between gap-5 overflow-x-auto mx-20">
                     <template v-for="item in futureWeatherData">
                         <div class="min-w-[300px] [aspect-ratio:3/2] border-solid border-2 futureDaysDivBorderGradient relative p-2 rounded-xl flex-1">
                             <div class="absolute flex w-[calc(100%-16px)] h-[calc(100%-16px)] flex-col justify-center items-center">
@@ -320,7 +320,7 @@
                             </div>
                             <div class="h-full w-full flex flex-col justify-between">
                                 <div>
-                                    <p>5. Maj 2024, Poniedziałek</p>
+                                    <p>{{ item.dateD }}</p>
                                 </div>
                                 <div class="flex justify-around gap-2">
                                     <div class="flex gap-1"><i class="bi bi-wind"></i><p>{{ item.wind }}m/s</p></div>

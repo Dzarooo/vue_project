@@ -14,10 +14,10 @@
 
 <template>
   <div class="w-full min-h-[100vh] flex flex-col websiteGradient">
-    <div class="flex justify-center mt-10">
+    <div class="flex justify-center mt-10 h-[70px]">
       <Searchbar v-on:searched="forwardSearchResult"/>
     </div>
-    <div class="flex-1 w-full flex flex-col">
+    <div class="flex-1 w-full flex flex-col h-[calc(100vh-110px)]">
       <CityWeather v-bind:searchQuery="searchData"/>
     </div>
   </div>
