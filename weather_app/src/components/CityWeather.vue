@@ -235,8 +235,8 @@
                                         timestampsCounter++;
                                         
                                         if(timestampsCounter > 3) { // 9a.m. and later
-                                            if(timestampsCounter == 0) {
-                                                const d = new Date(data.dt * 1000);
+                                            if(timestampsCounter == 4) {
+                                                const d = new Date(data.list[(j + (i * 8))].dt * 1000);
                                                 const monthsD = ['Styczeń','Luty','Marzec','Kwiecień','Maj','Czerwiec','Lipiec','Sierpień','Wrzesień','Październik','Listopad','Grudzień'];
                                                 const yearD = d.getFullYear();
                                                 const monthD = monthsD[d.getMonth()];
@@ -244,6 +244,7 @@
                                                 const daysOfWeekD = ['Poniedziałek','Wtorek','Środa','Czwartek','Piątek','Sobota','Niedziela'];
                                                 const dayOfWeekD = daysOfWeekD[d.getDay()-1];
                                                 dateD = dayOfWeekD+ ", " + dayD + " " + monthD + " " + yearD;
+                                                console.log(dateD);
                                             }
                                             if(timestampsCounter !== 8) {
                                                 tempDay += data.list[(j + (i * 8))].main.temp;
@@ -320,7 +321,7 @@
                             </div>
                             <div class="h-full w-full flex flex-col justify-between">
                                 <div>
-                                    <p>{{ item.dateD }}</p>
+                                    <p>{{ item.date }}</p>
                                 </div>
                                 <div class="flex justify-around gap-2">
                                     <div class="flex gap-1"><i class="bi bi-wind"></i><p>{{ item.wind }}m/s</p></div>
