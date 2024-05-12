@@ -1,23 +1,42 @@
 <script setup>
     import { ref, watch } from 'vue';
 
+    //props
     const props = defineProps({
         searchQuery: {
             type: String,
             required: true,
         },
+        temperatureUnit: {
+            type: String,
+            required: false,
+        }
     });
 
+    //searchQuery
     const currentSearchQuery = ref(props.searchQuery);
 
     watch(() => props.searchQuery, (newValue, oldValue) => {
         currentSearchQuery.value = newValue;
 
-        console.log("Prop searchResult changed in CityWeather.vue:", newValue);
+        console.log("Prop searchQuery changed in CityWeather.vue:", newValue);
 
         fetchData();
     });
 
+    //temperatureUnit
+    const currentTemperatureUnit = ref("celsius");
+
+    watch(() => props.temperatureUnit, (newValue, oldValue) => {
+        currentTemperatureUnit.value = newValue;
+
+        console.log("Prop temperatureUnit changed in CityWeather.vue:", currentTemperatureUnit.value);
+        todayWeatherData.value.unit = newValue;
+        console.log(todayWeatherData.value)
+        console.log(futureWeatherData.value)
+    })
+
+    //weatherData variables
     const todayWeatherData = ref({});
     const futureWeatherData = ref({
         one: {},
@@ -26,10 +45,12 @@
         four: {},
         five: {},
     });
+    //variables for idiot-protection
     const searched = ref(false);
     const isLoading = ref(false);
     const isCityFound = ref(false);
 
+    //map for setting weather icon according to data from fetch
     const iconMap = {
 		'01d': 'https://d.iplsc.com/weather/svg-icons/1.svg',
 		'01n': 'https://d.iplsc.com/weather/svg-icons/33.svg',
@@ -51,12 +72,13 @@
 		'50n': 'https://d.iplsc.com/weather/svg-icons/37.svg',
 	};
 
-
+    //set weather icon according to data from fetch
     function setIcon(icon) {
         //console.log(icon);
         return iconMap[icon];
     }
 
+    //fetch data
     function fetchData() {
         if(props.searchQuery !== "") {
             isLoading.value = true;
@@ -85,17 +107,18 @@
 
                             const b = new Date(data.sys.sunrise * 1000);
                             const hourB = b.getHours();
-                            const minutesB = b.getMinutes();
+                            const minutesB = b.getMinutes() >= 10 ? b.getMinutes() : "0" + b.getMinutes();
                             const sunrise = hourB + ":" + minutesB;
 
                             const c = new Date(data.sys.sunset * 1000);
                             const hourC = c.getHours();
-                            const minutesC = c.getMinutes();
+                            const minutesC = c.getMinutes() >= 10 ? c.getMinutes() : "0" + c.getMinutes();
                             const sunset = hourC + ":" + minutesC;
 
                             todayWeatherData.value = {
                                 name: data.name,
                                 temp: data.main.temp.toFixed(1),
+                                unit: currentTemperatureUnit.value == "celsius" ? "celsius" : "fahrenheit",
                                 temp_min: data.main.temp_min.toFixed(1),
                                 temp_max: data.main.temp_max.toFixed(1),
                                 date: date,
@@ -314,15 +337,26 @@
 
                         <div class="flex">
                             <div class="flex flex-col items-center">
-                                <h1 class="text-[20rem] [line-height:1] flex items-start">{{ todayWeatherData.temp }}</h1>   
-                                <p class="text-8xl text-slate-300">{{ todayWeatherData.temp_min }}&deg; / {{ todayWeatherData.temp_max }}&deg;</p>
+                                <template v-if="todayWeatherData.unit == 'celsius'">
+                                    <h1 class="text-[20rem] [line-height:1] flex items-start">{{ todayWeatherData.temp }}</h1>   
+                                    <p class="text-8xl text-slate-300">{{ todayWeatherData.temp_min }}&deg; / {{ todayWeatherData.temp_max }}&deg;</p>
+                                </template>
+                                <template v-else>
+                                    <h1 class="text-[20rem] [line-height:1] flex items-start">{{ ((todayWeatherData.temp * 1.8) + 32).toFixed(1) }}</h1>   
+                                    <p class="text-8xl text-slate-300">{{ ((todayWeatherData.temp_min * 1.8) + 32).toFixed(1) }}&deg; / {{ ((todayWeatherData.temp_max * 1.8) + 32).toFixed(1) }}&deg;</p>
+                                </template>
                                 <div class="w-full flex justify-center gap-10 mt-10">
                                     <p class="text-5xl font-thin"><i class="bi bi-sunrise"></i> {{ todayWeatherData.sunrise }}</p>
                                     <p class="text-5xl font-thin">{{ todayWeatherData.sunset }} <i class="bi bi-sunset"></i></p>
                                 </div>
                                 <div class="text-5xl flex gap-2 mt-3"><i class="bi bi-wind"></i><p>{{ todayWeatherData.wind }}m/s</p></div>
                             </div>
-                            <p><span class="text-8xl">&deg;C</span></p>
+                            <template v-if="todayWeatherData.unit == 'celsius'">
+                                <p><span class="text-8xl">&deg;C</span></p>
+                            </template>
+                            <template v-else>
+                                <p><span class="text-8xl">&deg;F</span></p>
+                            </template>
                         </div>
 
                     </div>
@@ -331,8 +365,14 @@
                         <template v-for="item in futureWeatherData">
                             <div class="min-w-[300px] [aspect-ratio:3/2] border-solid border-2 futureDaysDivBorderGradient relative p-2 rounded-xl flex-1">
                                 <div class="absolute flex w-[calc(100%-16px)] h-[calc(100%-16px)] flex-col justify-center items-center">
-                                    <div class="text-6xl flex items-center gap-2"><i class="bi bi-sun text-3xl [transform:translateY(3px)]"></i><p>{{ item.tempDay }}&deg;</p></div>
-                                    <div class="text-3xl flex gap-1 items-center text-slate-300"><i class="bi bi-moon text-sm [transform:translateY(3px)]"></i><p>{{ item.tempNight }}&deg;</p></div>
+                                    <template v-if="todayWeatherData.unit == 'celsius'">
+                                        <div class="text-6xl flex items-center gap-2"><i class="bi bi-sun text-3xl [transform:translateY(3px)]"></i><p>{{ item.tempDay }}&deg;</p></div>
+                                        <div class="text-3xl flex gap-1 items-center text-slate-300"><i class="bi bi-moon text-sm [transform:translateY(3px)]"></i><p>{{ item.tempNight }}&deg;</p></div>
+                                    </template>
+                                    <template v-else>
+                                        <div class="text-6xl flex items-center gap-2"><i class="bi bi-sun text-3xl [transform:translateY(3px)]"></i><p>{{ ((item.tempDay * 1.8) + 32).toFixed(1) }}&deg;</p></div>
+                                        <div class="text-3xl flex gap-1 items-center text-slate-300"><i class="bi bi-moon text-sm [transform:translateY(3px)]"></i><p>{{ ((item.tempNight * 1.8) + 32).toFixed(1) }}&deg;</p></div>
+                                    </template>
                                 </div>
                                 <div class="h-full w-full flex flex-col justify-between">
                                     <div>
