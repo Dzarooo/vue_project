@@ -172,6 +172,7 @@
                 })
 	        	.catch((error) => {
 	        		console.error('Error fetching today weather data:\n', error.message);
+                    emits("backgroundChanged", "");
 	        	})
         } else {
             console.warn("searchQuery is empty in CityWeather.vue");

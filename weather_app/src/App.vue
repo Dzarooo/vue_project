@@ -19,9 +19,13 @@
 
   //set new background according to weather in searched city
   function setNewBackground(newBackground) {
+    if(newBackground === "") {
+      document.getElementsByClassName("websiteGradient")[0].style.background = "";
+      document.getElementsByClassName("websiteGradient")[0].classList.add("websiteGradient");
+      return;
+    }
     console.log("newBackground received in App.vue:", newBackground);
     document.getElementsByClassName("websiteGradient")[0].style.background = "linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url('" + newBackground + "')";
-    document.getElementsByClassName("websiteGradient")[0].classList.add("");
     console.log("url('" + newBackground + "')");
   }
 
