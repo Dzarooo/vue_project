@@ -17,6 +17,14 @@
     temperatureUnitData.value = newUnit;
   }
 
+  //set new background according to weather in searched city
+  function setNewBackground(newBackground) {
+    console.log("newBackground received in App.vue:", newBackground);
+    document.getElementsByClassName("websiteGradient")[0].style.background = "linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url('" + newBackground + "')";
+    document.getElementsByClassName("websiteGradient")[0].classList.add("");
+    console.log("url('" + newBackground + "')");
+  }
+
 </script>
 
 <template>
@@ -26,7 +34,7 @@
       <temperatureUnit v-on:unitChanged="forwardNewUnit"/>
     </div>
     <div class="flex-1 w-full flex flex-col h-[calc(100vh-110px)]">
-      <CityWeather v-bind:searchQuery="searchData" v-bind:temperatureUnit="temperatureUnitData"/>
+      <CityWeather v-bind:searchQuery="searchData" v-bind:temperatureUnit="temperatureUnitData" v-on:backgroundChanged="setNewBackground"/>
     </div>
   </div>
 </template>

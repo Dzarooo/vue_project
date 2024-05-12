@@ -13,6 +13,11 @@
         }
     });
 
+    //emits
+    const emits = defineEmits([
+        'backgroundChanged',
+    ])
+
     //searchQuery
     const currentSearchQuery = ref(props.searchQuery);
 
@@ -78,12 +83,40 @@
         return iconMap[icon];
     }
 
+    //map for setting background image according to data from fetch
+    const backgroundMap = {
+		'01d': "https://images.unsplash.com/photo-1632117761438-b8ce7fc6838e?q=80&w=2670&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+		'01n': "https://images.unsplash.com/photo-1632117761438-b8ce7fc6838e?q=80&w=2670&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+		'02d': "https://images.unsplash.com/photo-1632117761438-b8ce7fc6838e?q=80&w=2670&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+		'02n': "https://images.unsplash.com/photo-1632117761438-b8ce7fc6838e?q=80&w=2670&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+		'03d': "https://images.unsplash.com/photo-1632117761438-b8ce7fc6838e?q=80&w=2670&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+		'03n': "https://images.unsplash.com/photo-1632117761438-b8ce7fc6838e?q=80&w=2670&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+		'04d': "https://images.unsplash.com/photo-1632117761438-b8ce7fc6838e?q=80&w=2670&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+		'04n': "https://images.unsplash.com/photo-1632117761438-b8ce7fc6838e?q=80&w=2670&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+		'09d': "https://images.unsplash.com/photo-1632117761438-b8ce7fc6838e?q=80&w=2670&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+		'09n': "https://images.unsplash.com/photo-1632117761438-b8ce7fc6838e?q=80&w=2670&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+		'10d': "https://images.unsplash.com/photo-1632117761438-b8ce7fc6838e?q=80&w=2670&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+		'10n': "https://images.unsplash.com/photo-1632117761438-b8ce7fc6838e?q=80&w=2670&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+		'11d': "https://images.unsplash.com/photo-1632117761438-b8ce7fc6838e?q=80&w=2670&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+		'11n': "https://images.unsplash.com/photo-1632117761438-b8ce7fc6838e?q=80&w=2670&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+		'13d': "https://images.unsplash.com/photo-1632117761438-b8ce7fc6838e?q=80&w=2670&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+		'13n': "https://images.unsplash.com/photo-1632117761438-b8ce7fc6838e?q=80&w=2670&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+		'50d': "https://images.unsplash.com/photo-1632117761438-b8ce7fc6838e?q=80&w=2670&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+		'50n': "https://images.unsplash.com/photo-1632117761438-b8ce7fc6838e?q=80&w=2670&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+    }
+
+    //set background image according to data from fetch
+    function setBackground(icon) {
+        emits("backgroundChanged", backgroundMap[icon]);
+    }
+
     //fetch data
     function fetchData() {
         if(props.searchQuery !== "") {
             isLoading.value = true;
             searched.value = true;
             isCityFound.value = true;
+            let tempIconIndex;
             //fetch today weather
             fetch(
 	        	`https://api.openweathermap.org/data/2.5/weather?q=${currentSearchQuery.value}&appid=f679cb1f60918bd9e72eece1168b0c17&units=metric&lang=pl`
@@ -131,10 +164,11 @@
                             }
                             console.log(todayWeatherData.value)
                             isCityFound.value = true;
+                            tempIconIndex = data.weather[0].icon;
                         }
 	        	})
                 .then(() => {
-                    fetchFutureWeatherData();
+                    fetchFutureWeatherData(tempIconIndex);
                 })
 	        	.catch((error) => {
 	        		console.error('Error fetching today weather data:\n', error.message);
@@ -144,7 +178,7 @@
         }
     }
 
-    function fetchFutureWeatherData() {
+    function fetchFutureWeatherData(iconIndex) { //iconIndex is used to set background of website based on weather in searched city
             //fetch weather for future days
             fetch(
                 `https://api.openweathermap.org/data/2.5/forecast?q=${currentSearchQuery.value}&appid=f679cb1f60918bd9e72eece1168b0c17&units=metric&lang=pl`
@@ -303,9 +337,12 @@
                     }
                 )
                 .catch((error) => {
-	        		console.error('Error fetching today weather data:\n', error.message);
+	        		console.error('Error fetching future weather data:\n', error.message);
                 })
-                .finally(isLoading.value = false);
+                .finally(() => {
+                    isLoading.value = false;
+                    setBackground(iconIndex)
+                });
     }
 
 </script>
