@@ -25,14 +25,14 @@
       return;
     }
     console.log("newBackground received in App.vue:", newBackground);
-    document.getElementsByClassName("websiteGradient")[0].style.background = "linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url('" + newBackground + "')";
-    console.log("url('" + newBackground + "')");
+    document.getElementsByClassName("websiteGradient")[0].style.background = newBackground;
+    console.log(newBackground);
   }
 
 </script>
 
 <template>
-  <div class="w-full min-h-[100vh] flex flex-col websiteGradient">
+  <div class="w-full min-h-[100vh] flex flex-col !bg-cover websiteGradient">
     <div class="flex justify-center mt-10 h-[70px] gap-5">
       <Searchbar v-on:searched="forwardSearchResult"/>
       <temperatureUnit v-on:unitChanged="forwardNewUnit"/>
