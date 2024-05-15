@@ -365,8 +365,8 @@
                     <div class="text-[#FFFFF0] flex flex-col sm:flex-row items-center sm:items-start justify-between font-thin mx-20">
 
                         <div>
-                            <h1 class="text-[3rem] lg:text-[4.5rem] xl:text-8xl">{{ todayWeatherData.name }}</h1>
-                            <p class="text-[1.25rem] lg:text-[1.87rem] xl:text-4xl text-slate-300 mt-[0.5rem] lg:mt-[0.75rem] xl:mt-4">{{ todayWeatherData.date }}</p>
+                            <h1 class="text-[3rem] lg:text-[4.5rem] xl:text-8xl text-center sm:text-start">{{ todayWeatherData.name }}</h1>
+                            <p class="text-[1.25rem] lg:text-[1.87rem] xl:text-4xl text-slate-300 mt-[0.5rem] lg:mt-[0.75rem] xl:mt-4 text-center sm:text-start">{{ todayWeatherData.date }}</p>
                             <div class="w-fit">
                                 <img class="w-[200px] lg:w-[300px] xl:w-[400px] h-[200px] lg:h-[300px] xl:h-[400px] mt-[1.25rem] lg:mt-[1.87rem] xl:mt-10" :src="todayWeatherData.icon">
                                 <p class="text-[1.25rem] lg:text-[1.87rem] xl:text-4xl text-slate-300 text-center">{{ todayWeatherData.description }}</p>
@@ -376,11 +376,17 @@
                         <div class="flex">
                             <div class="flex flex-col items-center">
                                 <template v-if="todayWeatherData.unit == 'celsius'">
-                                    <h1 class="text-[10rem] lg:text-[15rem] xl:text-[20rem] [line-height:1] flex items-start">{{ todayWeatherData.temp }}</h1>   
+                                    <h1 class="text-[10rem] lg:text-[15rem] xl:text-[20rem] [line-height:1] flex items-start [transform:translateX(25px)] sm:[transform:translateX(0px)]">
+                                        {{ todayWeatherData.temp }}
+                                        <span class="text-[3rem] lg:text-[4.5rem] xl:text-8xl block sm:hidden">&deg;C</span>
+                                    </h1>   
                                     <p class="text-[3rem] lg:text-[4.5rem] xl:text-8xl text-slate-300">{{ todayWeatherData.temp_min }}&deg; / {{ todayWeatherData.temp_max }}&deg;</p>
                                 </template>
                                 <template v-else>
-                                    <h1 class="text-[10rem] lg:text-[15rem] xl:text-[20rem] [line-height:1] flex items-start">{{ ((todayWeatherData.temp * 1.8) + 32).toFixed(1) }}</h1>   
+                                    <h1 class="text-[10rem] lg:text-[15rem] xl:text-[20rem] [line-height:1] flex items-start [transform:translateX(25px)] sm:[transform:translateX(0px)]">
+                                        {{ ((todayWeatherData.temp * 1.8) + 32).toFixed(1) }}
+                                        <span class="text-[3rem] lg:text-[4.5rem] xl:text-8xl block sm:hidden">&deg;F</span>
+                                    </h1>   
                                     <p class="text-[3rem] lg:text-[4.5rem] xl:text-8xl text-slate-300">{{ ((todayWeatherData.temp_min * 1.8) + 32).toFixed(1) }}&deg; / {{ ((todayWeatherData.temp_max * 1.8) + 32).toFixed(1) }}&deg;</p>
                                 </template>
                                 <div class="w-full flex justify-center gap-10 mt-[1.25rem] lg:mt-[1.87rem] xl:mt-10">
@@ -389,17 +395,19 @@
                                 </div>
                                 <div class="text-5xl flex gap-2 mt-[0.37rem] lg:mt-[0.56rem] xl:mt-3"><i class="bi bi-wind"></i><p>{{ todayWeatherData.wind }}m/s</p></div>
                             </div>
-                            <template v-if="todayWeatherData.unit == 'celsius'">
-                                <p><span class="text-8xl">&deg;C</span></p>
-                            </template>
-                            <template v-else>
-                                <p><span class="text-8xl">&deg;F</span></p>
+                            <template class="hidden sm:block">
+                                <template v-if="todayWeatherData.unit == 'celsius'">
+                                    <p><span class="text-[3rem] lg:text-[4.5rem] xl:text-8xl">&deg;C</span></p>
+                                </template>
+                                <template v-else>
+                                    <p><span class="text-[3rem] lg:text-[4.5rem] xl:text-8xl">&deg;F</span></p>
+                                </template>
                             </template>
                         </div>
 
                     </div>
 
-                    <div class="text-[#FFFFF0] font-thin flex justify-between gap-5 overflow-x-auto futureDaysScrollbar pb-4 mb-5 mx-20">
+                    <div class="text-[#FFFFF0] font-thin flex flex-col sm:flex-row justify-between gap-5 overflow-x-auto futureDaysScrollbar pb-4 mb-5 mx-5 sm:mx-20">
                         <template v-for="item in futureWeatherData">
                             <div class="min-w-[300px] [aspect-ratio:3/2] border-solid border-2 futureDaysDivBorderGradient relative p-2 rounded-xl flex-1">
                                 <div class="absolute flex w-[calc(100%-16px)] h-[calc(100%-16px)] flex-col justify-center items-center">
