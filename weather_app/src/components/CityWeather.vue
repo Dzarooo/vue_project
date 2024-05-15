@@ -362,7 +362,7 @@
                     <div class="dot"></div>
                 </div>
                 <div v-else class="w-full flex-1 flex flex-col justify-around gap-10">
-                    <div class="text-[#FFFFF0] flex justify-between font-thin mx-20">
+                    <div class="text-[#FFFFF0] flex flex-col sm:flex-row items-center sm:items-start justify-between font-thin mx-20">
 
                         <div>
                             <h1 class="text-[3rem] lg:text-[4.5rem] xl:text-8xl">{{ todayWeatherData.name }}</h1>
