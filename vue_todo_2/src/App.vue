@@ -16,6 +16,27 @@ const todoLists = reactive({
             { id: 3, title: "Task 3", completed: false },
             { id: 4, title: "Task 4", completed: true }
         ]
+    },
+    3: {
+        title: "List 3",
+        todos: [
+            { id: 5, title: "Task 5", completed: false },
+            { id: 6, title: "Task 6", completed: true }
+        ]
+    },
+    4: {
+        title: "List 4",
+        todos: [
+            { id: 7, title: "Task 7", completed: false },
+            { id: 8, title: "Task 8", completed: true }
+        ]
+    },
+    5: {
+        title: "List 5",
+        todos: [
+            { id: 9, title: "Task 9", completed: false },
+            { id: 10, title: "Task 10", completed: true }
+        ]
     }
 })
 </script>
@@ -30,8 +51,10 @@ const todoLists = reactive({
             <span class="bg-white w-20 h-[2px] translate-y-[3px]"></span>
         </div>
 
-        <template v-for="list in todoLists"> <!-- iterate through every todolist and display component for each of them -->
-            <todoList v-bind:todos="list.todos">{{ list.title }}</todoList>
-        </template>
+        <div class="mt-10 flex flex-wrap justify-center gap-10">
+            <template v-for="list in todoLists"> <!-- iterate through every todolist and display component for each of them -->
+                <todoList v-bind:todos="list.todos">{{ list.title }}</todoList>
+            </template>
+        </div>
     </div>
 </template>
