@@ -1,4 +1,6 @@
 <script setup>
+    import todo from "./todo.vue"
+
     const props = defineProps({
         todos: {
             type: Array,
@@ -14,7 +16,7 @@
         <span class="bg-slate-300 block w-full h-[1px] my-4"></span>
 
         <div v-for="todo in props.todos"> <!-- iterate through todo items and display them -->
-            <p>{{ todo.title }}</p>
+            <todo v-bind:completed="todo.completed">{{ todo.title }}</todo>
         </div>
 
     </div>
